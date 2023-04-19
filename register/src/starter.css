@@ -1,0 +1,30 @@
+.App {
+  height: 30%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  -webkit-box-orient: vertical;
+  flex-direction: column;
+  min-width: 896px;
+}
+
+.btn {
+  width: auto;
+  align-content: center;
+  background: #1877f2;
+  border: 1px solid #1877f2;
+  color: #fff;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  margin: 0.5rem 0.5rem;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.Header {
+  grid-area: header_section;
+  background-color: #a77474;
+  display:flex;
+  flex-direction: row-reverse;
+}

@@ -1,0 +1,16 @@
+.content{
+  width: 100%;
+  margin: 1px;
+  height: 100%;
+  /* min-height: 180vh; */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  display: inline-block;
+  /* background:#b7d6ff; */
+  border: 1px solid #1877f2;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 1rem;
+  align-items: left;
+}

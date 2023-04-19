@@ -1,0 +1,17 @@
+.Footer {
+  width: 100%;
+  margin: 1px;
+  display: flex;
+  background: #b7d6ff;
+  border: 1px solid #1877f2;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  }
+
+  .Footer > .footer-nav{
+    font-size: 15px;
+  }
+

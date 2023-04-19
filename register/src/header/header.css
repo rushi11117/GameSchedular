@@ -1,0 +1,102 @@
+.Header {
+  width: 100%;
+  margin: 1px;
+  position: relative;
+  /* display: inline-block; */
+  background:#b7d6ff;
+  border: 1px solid #1877f2;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 1rem;
+  /* align-items: left; */
+}
+
+.Header > .nav > .nav-tab {
+  width: 15%;
+  height: 70px;
+  margin: 3px;
+  align-content: center;
+  background-color: rgb(255, 255, 255);
+  display: inline-block;
+  border: 1px solid #dddfe2;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.Header > .nav {
+  margin: 2px;
+  /* display: flex;
+  justify-content: left; */
+}
+
+.Header > .nav > .sub-nav {
+  /* position: relative; */
+  margin: 2px;
+  width: 23%;
+  float: left;
+  /* justify-content: flex-end; */
+}
+
+
+.Header > .nav > .sub-nav2 {
+  display: flex;
+  float: left;
+  position: relative;
+  margin: 2px;
+  width: 59%;
+  /* justify-content: flex-start; */
+  
+}
+
+.Header > .nav > .sub-nav2 > .logo {
+  margin: 1% ;
+  background-color: #b7d6ff;
+}
+
+.Header > .nav > .sub-nav  > .button {
+  border: 0;
+  text-align: center;
+  display: inline-block;
+  padding: 14px;
+  width: 150px;
+  margin: 2%;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #1e5ae6;
+  border-radius: 8px;
+  font-family: "proxima-nova-soft", sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: box-shadow 200ms ease-out;
+}
+
+
+
+
+.Header > .nav > .sub-nav2  > .bn3637 {
+  display: inline-flex;
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 2rem;
+  font-weight: 700;
+  font-size: 25px;
+  text-align: center;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  backface-visibility: hidden;
+  border: 0.3rem solid transparent;
+  border-radius: 1rem;
+}
+.Header > .nav > .sub-nav2  > .bn38 {
+  border-color: transparent;
+  margin: 10px;
+  font-size: 25px;
+  transition: background-color 0.3s ease-in-out;
+}
+  
+.Header > .nav > .sub-nav2  > .bn38:hover {
+  background-color: #1877f2;
+}

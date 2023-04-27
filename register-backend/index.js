@@ -1,20 +1,27 @@
+//Packages
 import express from "express"
 import cors from "cors"
 import mongoose from "mongoose"
+// import { ObjectId } from 'mongodb';
+
+//Models
+import { FreeTime } from './Models/FreeTime.js'
+import { Venue } from './Models/Venues.js'
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
 
+//Connection
 mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, () => {
     console.log("DB Connected")
-    console.log("hello")
 })
 
+//Schema Defination And Initialization
 app.get("/", (req, res) => {
     res.send("my API")
 })
@@ -27,16 +34,7 @@ const userSchema = new mongoose.Schema({
 
 const User = new mongoose.model("User", userSchema)
 
-const freeTimeSchema = new mongoose.Schema({
-    email : String,
-    from: String,
-    till : String,
-    venue : String
-})
-
-const FreeTime = new mongoose.model("FreeTime", freeTimeSchema)
-
-//routes
+//Logic Per Route
 
 app.post("/login", (req, res) => {
     const { email, password } = req.body
@@ -78,54 +76,78 @@ app.post("/register", (req, res) => {
 
 })
 
-
-
-
-app.put('/addfreetime', async function (req, res)  {
+//venuefr Venue From Frontend
+app.put('/addfreetime', async function (req, res) {
+    console.log("Backedn Excecuted")
     const from = req.body.from
     const till = req.body.till
-    const venue = req.body.venue
+    const venuefr = req.body.venue
     const email = "rushimhetre@gmail.com"
-    
+
+    //Temporarly hardcoded
+    // const isverified = true
 
 
-    const freeTime = new FreeTime({
-        email,
-        from,
-        till,
-        venue
+
+    FreeTime.findOne({ email: email }, async (err, freetime) => {
+
+        if (freetime) {
+            console.log({ message: "Update" });
+
+            try {
+                const updatedFreetime = await FreeTime.updateOne(
+                    { _id: freetime._id },
+                    {
+                        $push: {
+                            slot: {
+                                from,
+                                till,
+                                venuefr
+                            }
+                        }
+                    }
+                );
+                console.log({ message: "Slot Added Successfully!!!" });
+            } catch (err) {
+                console.log(err);
+            }
+
+        } else {
+            const freeTime = new FreeTime({
+                email,
+                slot: [{ from, till, venuefr }]
+            });
+
+            freeTime.save(err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log({ message: "Slot Added Successfully!!!" });
+                }
+            });
+        }
+    });
+
+    Venue.findOne({ email: email }, async (err, venue) => {
+        if (venue) {
+            console.log("eat 1* 2* 3* 4* 5*")
+        } else {
+            const venue = new Venue({
+                email,
+                venuefr
+            })
+            venue.save(err => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log({ message: "Venue Added succesfully!!" })
+                }
+            })
+
+        }
     })
 
-    // //Get Session Id Here
-    // const id = new Id({
-    //     id : req.body.email
-    // })
-    await Padhlo.updateOne(
-        {"courses.course": "Btech" , "courses.semesters.sem": 1},
-        { $addToSet : { "courses.semesters.$.subjects": subject } },
-        function(err)
-        {
-            if(!err)
-            {
-                res.status(200).send("OK");
-            }
-            else
-            {
-                res.status(404).send(err);
-            }
-        }
-        )
-
-    // freeTime.save(err => {
-        
-    //     if (err) {
-    //         res.send(err)
-    //     } else {
-    //         res.send({ message: "Time Slot Added Succesfully!!" })
-    //     }
-    // })
-   
-  });
+});
 
 app.listen(9002, () => {
     console.log("DB started on port 9002")

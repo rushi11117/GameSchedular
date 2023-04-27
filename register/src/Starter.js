@@ -1,31 +1,32 @@
-import React from 'react';
-import "./starter.css";
-import { Route, Switch, useHistory } from 'react-router-dom';
-import {Login} from "./components/content/login/Login";
-import {Register} from "./components/content/register/Register";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import "./Starter.css"
+// import { Route } from "react-router-dom"
 
-export function Starter () {
-    let history = useHistory()
-    // const changeUrl = () => {
-    //     history.push('/login')
-    // }
-
+const Header = () => {
+    const testLogin = () => {
+    }
     return (
-        <>
-            <Switch>
-                <div className='App'>
-                    <div className='Header'>
-                        <Route exact path='/login' component={Login} >
-                            <div className='btn' onClick={() => history.push("/login")}>Login</div>
-                        </Route>
-                        <Route exact path='/register' component={Register} >
-                            <div className='btn' onClick={() => history.push("/register")}>SignUp</div>
-                        </Route>
-                    </div>
+
+        <div className="nav">
+            <div className="sub-nav2">
+                <div className="logo">
+                    LOGO
                 </div>
-            </Switch>
-        </>
-    );
+                <a href="/" className="bn3637 bn38"> Games Nearby</a>
+                <a href="/" className="bn3637 bn38"> Help?</a>
+                <a href="/" className="bn3637 bn38"> About us</a>
+            </div>
+            <nav>
+                <ul className="nav-links">
+                    <li>
+                        <NavLink to="/login">
+                            <div className="button">Login</div>
+                        </NavLink>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    )
 }
-
-
+export default Header

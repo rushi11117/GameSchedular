@@ -1,10 +1,14 @@
-import React, {useState} from "react";
-import "./login.css";
-import axios from "axios";
-import Register from "../register/Register";
-import { Route ,useHistory } from "react-router-dom";
+import React, {useContext, useState} from "react"
+import "./login.css"
+import axios from "axios"
+import { useHistory } from "react-router-dom"
 
-export function Login ({ setLoginUser}) {
+
+
+const Login = ({ setLoginUser ,handlelogin}) => {
+
+
+    const [isLogedIn, setIsLogedIn] = useState(false);
 
     const history = useHistory()
 
@@ -22,9 +26,11 @@ export function Login ({ setLoginUser}) {
     }
 
     const login = () => {
-        axios.post("http://localhost:9002/login", user)
+        axios.post("http://192.168.43.46:9002/login", user)
         .then(res => {
+            setIsLogedIn(true);
             alert(res.data.message)
+            console.log(setIsLogedIn)
             setLoginUser(res.data.user)
             history.push("/")
         })
@@ -37,8 +43,9 @@ export function Login ({ setLoginUser}) {
             <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter your Password" ></input>
             <div className="button" onClick={login}>Login</div>
             <div>or</div>
-            <Route path="/register" component={Register}/>
             <div className="button" onClick={() => history.push("/register")}>Register</div>
         </div>
     )
 }
+
+export default Login

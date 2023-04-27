@@ -2,9 +2,9 @@
   width: 100%;
   margin: 1px;
   display: flex;
-  background: #b7d6ff;
+  background: white;
   border: 1px solid #1877f2;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 15px 5px grey;
   border-radius: 8px;
   padding: 1rem;
   justify-content: center;

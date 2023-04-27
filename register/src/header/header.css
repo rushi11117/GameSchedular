@@ -2,13 +2,13 @@
   width: 100%;
   margin: 1px;
   position: relative;
-  /* display: inline-block; */
+  display: inline-block;
   background:#b7d6ff;
   border: 1px solid #1877f2;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
   border-radius: 8px;
   padding: 1rem;
-  /* align-items: left; */
+  align-items: left;
 }
 
 .Header > .nav > .nav-tab {
@@ -26,32 +26,36 @@
 
 .Header > .nav {
   margin: 2px;
-  /* display: flex;
-  justify-content: left; */
+  display: flex;
+  justify-content: flex-start;
 }
 
 .Header > .nav > .sub-nav {
-  /* position: relative; */
+  display: flex;
+  position: relative;
   margin: 2px;
-  width: 23%;
-  float: left;
-  /* justify-content: flex-end; */
+  width: 15%;
+  justify-content: flex-end;
 }
 
+.Header > .nav > .sub-nav {
+  color: azure;
+}
 
 .Header > .nav > .sub-nav2 {
   display: flex;
-  float: left;
   position: relative;
   margin: 2px;
-  width: 59%;
-  /* justify-content: flex-start; */
+  width: 75%;
+  justify-content: flex-start;
   
 }
 
 .Header > .nav > .sub-nav2 > .logo {
-  margin: 1% ;
-  background-color: #b7d6ff;
+  margin: 2px ;
+  width: auto;
+  height: auto;
+  background-color: #dddfe2;
 }
 
 .Header > .nav > .sub-nav  > .button {
@@ -60,7 +64,7 @@
   display: inline-block;
   padding: 14px;
   width: 150px;
-  margin: 2%;
+  margin: 7px;
   cursor: pointer;
   color: #ffffff;
   background-color: #1e5ae6;

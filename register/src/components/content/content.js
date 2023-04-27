@@ -1,6 +1,6 @@
 import './content.css'
 import Homepage from './homepage/homepage'
-import Login from "./login/login"
+import Login from "./login/Login"
 import Register from "./register/register"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useState } from 'react';
@@ -13,7 +13,7 @@ function Content() {
       <div>
         <Router>
           <Switch>
-            <Route exact path="/">
+            <Route exact path="/homepage">
               {
                 user && user._id ? <Homepage setLoginUser={setLoginUser} /> : <Login setLoginUser={setLoginUser} />
               }
@@ -27,7 +27,6 @@ function Content() {
           </Switch>
         </Router>
       </div>
-
     </div>
   );
 }

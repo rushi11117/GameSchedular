@@ -7,6 +7,7 @@ const slotSchema = new mongoose.Schema({
     venuefr: String
 })
 const freeTimeSchema = new mongoose.Schema({
+    game : String,
     email: String,
     slot : [slotSchema]
     

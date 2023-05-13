@@ -13,6 +13,24 @@ app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
 
+
+
+
+/*
+
+
+        Makefile Egnors
+
+
+*/
+
+
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
+
 //Connection
 mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
     useNewUrlParser: true,
@@ -79,10 +97,11 @@ app.post("/register", (req, res) => {
 //venuefr Venue From Frontend
 app.put('/addfreetime', async function (req, res) {
     console.log("Backedn Excecuted")
+    const game = req.body.game
     const from = req.body.from
     const till = req.body.till
     const venuefr = req.body.venue
-    const email = "rushimhetre@gmail.com"
+    const email = "rushimhetre2001@gmail.com"
 
     //Temporarly hardcoded
     // const isverified = true
@@ -114,6 +133,7 @@ app.put('/addfreetime', async function (req, res) {
 
         } else {
             const freeTime = new FreeTime({
+                game,
                 email,
                 slot: [{ from, till, venuefr }]
             });

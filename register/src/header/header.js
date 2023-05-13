@@ -2,44 +2,53 @@ import React, { useContext, useState } from "react";
 import "./header.css"
 import { Link } from "react-router-dom"
 import { UserContext } from "../Context";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Header = ({handleLogout}) => {
+const Header = ({ handleLogout }) => {
     const [user, setLoginUser] = useState({})
     // const { isLogedIn } = useContext(UserContext);
     console.log(user._id)
 
     return (
-        <div className="Header">
-            <div className="nav">
-                <div className="sub-nav2">
-                    <div className="logo">
-                        LOGO
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="container-fluid">
+                <Link to="/" className="navbar-brand">LOGO</Link>
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNav">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li className="nav-item">
+                            <Link to="/gamesnear" className="nav-link">Games Nearby</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/help" className="nav-link">Help?</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/about" className="nav-link">About us</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/newgame" className="nav-link">Request</Link>
+                        </li>
+                    </ul>
+                    <div className="d-flex">
+                        {
+                            user && user._id ?
+                                <Link to="/logout" onClick={alert("FuckOff")} className="btn btn-outline-danger">
+                                    Logout
+                                </Link>
+                                :
+                                <>
+                                    <Link to="/login" className="btn btn-outline-primary">
+                                        Login
+                                    </Link>
+                                </>
+                        }
                     </div>
-                    <Link to="/gamesnear" className="bn3637 bn38"> Games Nearby</Link>
-                    <Link to="/help" className="bn3637 bn38"> Help?</Link>
-                    <Link to="/about" className="bn3637 bn38"> About us</Link>
-                    <Link to="/newgame" className="bn3637 bn38"> Request</Link>
-                </div>
-                <div className="sub-nav">
-
-                    {
-                        user && user._id ?
-                            <Link to="/logout" onClick={alert("FuckOff")} className="button">
-                                Logout
-                            </Link>
-                            :
-                            <>
-                                <Link to="/login" className="button">
-                                    Login
-                                </Link>
-                                <Link to="/register" className="button">
-                                    Signup
-                                </Link>
-                            </>
-                    }
                 </div>
             </div>
-        </div>
+        </nav>
+
     )
 }
 export default Header

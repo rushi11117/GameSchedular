@@ -1,18 +1,18 @@
 import './App.css';
-import Homepage from './components/content/homepage/homepage';
+import Homepage from './components/content/homepage/Homepage';
 import Login from "./components/content/login/Login";
-import Register from "./components/content/register/register";
+import Register from "./components/content/register/Register";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useState } from 'react';
-import Header from './header/Header';
-import Footer from './footer/Footer';
+import Header from './header/header';
+import Footer from './footer/footer';
 import GamesNear from './components/content/GamesNear/GamesNear'
 import AboutUs from './components/content/AboutUs/AboutUs';
 import Help from './components/content/help/Help';
 import AddGame from './components/content/AddGame/AddGame'
 // import { UserProvider } from './Context';
 import Logout from './components/content/Logout/Logout';
-
+import 'bootstrap/dist/css/bootstrap.min.css'; // import Bootstrap CSS
 
 function App() {
 
@@ -20,7 +20,7 @@ function App() {
   return (
     <Router>
       {/* <UserProvider> */}
-        <div className="App">
+        <div className="container-fluid"> {/* add Bootstrap container class */}
           <Header />
           <Switch>
             <Route exact path="/">
@@ -56,16 +56,5 @@ function App() {
     </Router>
   );
 }
-
-
-
-
-// function App() {
-//   return (
-//     <UserProvider>
-//       <Main />
-//     </UserProvider>
-//   );
-// }
 
 export default App;

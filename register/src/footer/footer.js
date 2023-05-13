@@ -1,13 +1,15 @@
 import React from "react";
-import "./footer.css"
+import "./footer.css";
+import { Container } from "react-bootstrap";
 
-const Header =()=>{
-    return(
-        <div className="Footer">
-            <div className="footer-nav">
-            ©© todfod.org
-            </div>
-        </div>
-    )
-}
-export default Header
+const Footer = () => {
+  return (
+    <div>
+      <Container className="py-3 bg-light text-center">
+        <div>&copy; todfod.org</div>
+      </Container>
+    </div>
+  );
+};
+
+export default Footer;

@@ -1,32 +1,54 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "./Starter.css"
-// import { Route } from "react-router-dom"
+import "./Starter.css";
 
 const Header = () => {
-    const testLogin = () => {
-    }
-    return (
-
-        <div className="nav">
-            <div className="sub-nav2">
-                <div className="logo">
-                    LOGO
-                </div>
-                <a href="/" className="bn3637 bn38"> Games Nearby</a>
-                <a href="/" className="bn3637 bn38"> Help?</a>
-                <a href="/" className="bn3637 bn38"> About us</a>
-            </div>
-            <nav>
-                <ul className="nav-links">
-                    <li>
-                        <NavLink to="/login">
-                            <div className="button">Login</div>
-                        </NavLink>
-                    </li>
-                </ul>
-            </nav>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid">
+        <NavLink to="/" className="navbar-brand">
+          LOGO
+        </NavLink>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <NavLink to="/" className="nav-link">
+                Games Nearby
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/" className="nav-link">
+                Help?
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/" className="nav-link">
+                About us
+              </NavLink>
+            </li>
+          </ul>
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <NavLink to="/login" className="nav-link">
+                Login
+              </NavLink>
+            </li>
+          </ul>
         </div>
-    )
-}
-export default Header
+      </div>
+    </nav>
+  );
+};
+
+export default Header;

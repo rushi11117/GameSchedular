@@ -1,27 +1,37 @@
 import './App.css';
-import Homepage from './components/content/homepage/Homepage';
-import Login from "./components/content/login/Login";
-import Register from "./components/content/register/Register";
+import Homepage from './components/private/homepage/Homepage';
+import Login from "./components/public/login/Login";
+import Register from "./components/public/register/Register";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useState } from 'react';
-import Header from './header/header';
-import Footer from './footer/footer';
-import GamesNear from './components/content/GamesNear/GamesNear'
-import AboutUs from './components/content/AboutUs/AboutUs';
-import Help from './components/content/help/Help';
-import AddGame from './components/content/AddGame/AddGame'
-// import { UserProvider } from './Context';
-import Logout from './components/content/Logout/Logout';
+import PublicHeader from './components/PublicHeader/PublicHeader';
+import PrivateHeader from './components/PrivateHeader/PrivateHeader'
+import Footer from './components/footer/footer';
+import GamesNear from './components/public/GamesNear/GamesNear'
+import AboutUs from './components/public/AboutUs/AboutUs';
+import Help from './components/public/help/Help';
+import AddGame from './components/private/AddGame/AddGame'
+import Logout from './components/private/Logout/Logout';
 import 'bootstrap/dist/css/bootstrap.min.css'; // import Bootstrap CSS
 
 function App() {
 
+
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
   const [user, setLoginUser] = useState({})
   return (
     <Router>
-      {/* <UserProvider> */}
-        <div className="container-fluid"> {/* add Bootstrap container class */}
-          <Header />
+      <div className="container-fluid"> {/* add Bootstrap container class */}
+      <div>
+      {isLoggedIn ? (
+        <PrivateHeader />
+      ) : (
+        <PublicHeader />
+      )}
+      {/* Rest of your application */}
+    </div>
+        <div>
           <Switch>
             <Route exact path="/">
               {
@@ -50,9 +60,11 @@ function App() {
               <AddGame />
             </Route>
           </Switch>
+        </div>
+        <div>
           <Footer />
         </div>
-      {/* </UserProvider> */}
+      </div>
     </Router>
   );
 }

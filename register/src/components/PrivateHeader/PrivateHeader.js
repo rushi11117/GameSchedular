@@ -63,9 +63,9 @@ const PrivateHeader = ({ handleLogout }) => {
                                     className="dropdown-menu show"
                                     aria-labelledby="profileDropdown"
                                 >
-                                    <a className="dropdown-item" href="/profile">
+                                    <Link to="/profile" className="dropdown-item">
                                         Profile
-                                    </a>
+                                    </Link >
                                     <a className="dropdown-item" href="">
                                         Settings
                                     </a>

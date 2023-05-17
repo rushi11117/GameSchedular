@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
 import "./header.css"
 import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { Button } from "react-bootstrap";
 // import { UserContext } from "../Context";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,11 +31,25 @@ const PublicHeader = ({ handleLogout }) => {
                             <Link to="/about" className="nav-link">About us</Link>
                         </li>
                     </ul>
-                    <div className="d-flex">
-                        <Link to="/login" className="btn btn-outline-primary">
+                    {/* <div className="d-flex">
+                        <Link to="/login" className="" icon={}>
                             Login
                         </Link>
-                    </div>
+                    </div> */}
+
+                    <Button variant="" style={{ margin: '0.05px' }}>
+                        <Link to="/login" className="secondary" >
+                            <FontAwesomeIcon icon={faSignInAlt} />
+                            Login
+                        </Link>
+                    </Button>
+
+                    <Button variant="" style={{ margin: '0.05px' }}>
+                        <Link to="/register" className="secondary" >
+                            <FontAwesomeIcon icon={faUserPlus} />
+                            SignUp
+                        </Link>
+                    </Button>
                 </div>
             </div>
         </nav>

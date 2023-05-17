@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./register.css";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { Button } from "react-bootstrap";
+
 
 const Register = () => {
   const history = useHistory();
@@ -25,7 +27,7 @@ const Register = () => {
     const { name, email, password, reEnterPassword } = user;
     if (name && email && password && password === reEnterPassword) {
       axios
-        .post("http://192.168.43.46:9002/register", user)
+        .post("http://localhost:9002/register", user)
         .then((res) => {
           alert(res.data.message);
           history.push("/login");
@@ -88,21 +90,21 @@ const Register = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-primary"
+                    varient="secondary"
                     onClick={register}
                   >
                     Register
-                  </button>
+                  </Button>
                   <span className="mx-2">or</span>
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-primary"
+                    varient="primary"
                     onClick={() => history.push("/login")}
                   >
                     Login
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-const Logout = () => {
+const Logout = ({ setIsLoggedIn }) => {
   const [showConfirmation, setShowConfirmation] = useState(true);
   const history = useHistory();
 
@@ -10,8 +10,11 @@ const Logout = () => {
     // Handle confirm action
     // ...
     // Close the confirmation box
+    // setIsLoggedIn(false);
+    // sessionStorage.setItem('isLoggedIn',false)
+    sessionStorage.removeItem('isLoggedIn');
+
     setShowConfirmation(false);
-    
   };
 
   const handleClose = () => {
@@ -47,3 +50,5 @@ const Logout = () => {
 };
 
 export default Logout;
+
+

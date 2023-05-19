@@ -8,7 +8,7 @@ import path from "path";
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
-import { Venue } from './Models/Venues.js'
+// import { Venue } from './Models/Venues.js'
 // import Game  from './Models/GameReq.js'
 const app = express()
 app.use(express.json())
@@ -46,14 +46,23 @@ const userSchema = new mongoose.Schema({
 const User = new mongoose.model("User", userSchema)
 
 
+const venueSchema = new mongoose.Schema({
+    venuefr : String,
+    email : String
+})
+
+const Venue = new mongoose.model("Venue",venueSchema)
+
+
 const gameSchema = new mongoose.Schema({
     email: String,
-    
+
     freetime: [
         {
             game: String,
             from: Date,
             till: Date,
+            venue:String
         },
     ],
 });
@@ -157,12 +166,12 @@ app.post('/api/user/profile', upload.single('profilePic'), async (req, res) => {
 
 
 app.put('/addfreetime', (req, res) => {
-    const { email, game, from, till } = req.body;
-    console.log(req.body);
+    const { email, game, from, till,venuefr } = req.body;
+    console.log(req.body.venuefr);
     // Create a new document and update the freetime array for the email
     Game.findOneAndUpdate(
         { email },
-        { $push: { freetime: { game, from, till } } },
+        { $push: { freetime: { game, venuefr, from, till } } },
         { upsert: true }
     )
         .then(() => res.sendStatus(200))
@@ -170,15 +179,36 @@ app.put('/addfreetime', (req, res) => {
             console.error(error);
             res.sendStatus(500);
         });
+
+
+    //Update Vanue List
+    Venue.findOne({ email: email }, async (err, venue) => {
+        if (venue) {
+            console.log("eat 1* 2* 3* 4* 5*")
+        } else {
+            const venue = new Venue({
+                email,
+                venuefr
+            })
+            venue.save(err => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log({ message: "Venue Added succesfully!!" })
+                }
+            })
+
+        }
+    })
 });
 
-//venuefr Venue From Frontend
+//venue Venue From Frontend
 // app.put('/addfreetime', async function (req, res) {
 //     console.log(req.body)
 //     const game = req.body.game
 //     const from = req.body.from
 //     const till = req.body.till
-//     const venuefr = req.body.venue
+//     const venue = req.body.venue
 //     const email = req.body.email
 
 
@@ -196,7 +226,7 @@ app.put('/addfreetime', (req, res) => {
 //                             slot: {
 //                                 from,
 //                                 till,
-//                                 venuefr
+//                                 venue
 //                             }
 //                         }
 //                     }
@@ -210,7 +240,7 @@ app.put('/addfreetime', (req, res) => {
 //             const freeTime = new FreeTime({
 //                 game,
 //                 email,
-//                 slot: [{ from, till, venuefr }]
+//                 slot: [{ from, till, venue }]
 //             });
 
 //             freeTime.save(err => {
@@ -229,7 +259,7 @@ app.put('/addfreetime', (req, res) => {
 //         } else {
 //             const venue = new Venue({
 //                 email,
-//                 venuefr
+//                 venue
 //             })
 //             venue.save(err => {
 //                 if (err) {

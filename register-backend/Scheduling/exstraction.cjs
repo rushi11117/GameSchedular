@@ -66,4 +66,5 @@ const getSlots = async () => {
   }
 };
 
-	
+
+module.exports = getSlots;

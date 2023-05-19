@@ -10,13 +10,13 @@ export default function AddGame() {
     const [game, setGame] = useState('')
     const [from, setFrom] = useState(new Date());
     const [till, setTill] = useState(new Date());
-    const [venue, setVenue] = useState('');
+    const [venuefr, setVenue] = useState('');
 
 
 
     // /Declared Game
     const games = [
-        { value: '', label: 'Tennis' },
+        { value: 'Tennis', label: 'Tennis' },
         { value: 'Ping Pong', label: 'Ping Pong' },
         { value: 'Squash', label: 'Squash' },
         { value: 'Badminton', label: 'Badminton' }
@@ -25,9 +25,10 @@ export default function AddGame() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(game);
+        // console.log(venue);
+        sessionStorage.setItem('venue', venuefr.toString());
         const email = sessionStorage.getItem('email');
-        const updatedData = { email, game, from, till, venue };
+        const updatedData = { email, game, from, till, venuefr };
 
         fetch('http://localhost:9002/addfreetime', {
             method: 'PUT',
@@ -105,15 +106,31 @@ export default function AddGame() {
                                 </Form.Group>
                             </Col>
                         </Row>
+
+
                         <Form.Group controlId="venue" style={{ margin: '5px' }}>
                             <Form.Label>Venue</Form.Label>
                             <Form.Control
                                 type="text"
-                                venuevalue={venue}
-                                onChange={(e) => setVenue(e.target.venuevalue)}
+                                value={venuefr}
+                                onChange={(e) => {
+                                    console.log(e.target.value); // Log the entered value
+                                    setVenue(e.target.value);
+                                }}
                                 placeholder="Enter venue"
                             />
                         </Form.Group>
+
+
+                        {/* <Form.Group controlId="venue" style={{ margin: '5px' }}>
+                            <Form.Label>Venue</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={venue}
+                                onChange={(e) => setVenue(e.target.venue)}
+                                placeholder="Enter venue"
+                            />
+                        </Form.Group> */}
                         <Button
                             variant="secondary"
                             type="button"

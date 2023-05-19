@@ -7,12 +7,8 @@ const Logout = ({ setIsLoggedIn }) => {
   const history = useHistory();
 
   const handleConfirm = () => {
-    // Handle confirm action
-    // ...
-    // Close the confirmation box
-    // setIsLoggedIn(false);
-    // sessionStorage.setItem('isLoggedIn',false)
     sessionStorage.removeItem('isLoggedIn');
+    history.push('/')
 
     setShowConfirmation(false);
   };

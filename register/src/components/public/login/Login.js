@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import "./login.css";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { connect } from "react-redux";
+import { Alert, Row, Col, Form, Button } from "react-bootstrap";
 
 const Login = ({ setIsLoggedIn }) => {
-  // const [isLogedIn, setIsLogedIn] = useState(false);
   const history = useHistory();
 
   const [user, setUser] = useState({
@@ -14,34 +11,51 @@ const Login = ({ setIsLoggedIn }) => {
     password: "",
   });
 
+  const [showError, setShowError] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser({
-      ...user,
+
+    setUser((prevUser) => ({
+      ...prevUser,
       [name]: value,
-    });
+    }));
   };
 
+  const login = (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    sessionStorage.setItem('email',user.email);
+    if (!user.email || !user.password) {
+      alert("Email and password are required.");
+      return;
+    }
 
-  const login = () => {
     axios
       .post("http://localhost:9002/login", user)
       .then((res) => {
-        sessionStorage.setItem('isLoggedIn', true)
-        alert(res.data.message);
-        console.log(sessionStorage.getItem('isLoggedIn'));
-        // setLoginUser(res.data.user);
-        history.push("/");
+        const loginState = sessionStorage.getItem("isLoggedIn");
+        if (loginState === "true") {
+          alert("User already logged in");
+        } else {
+          sessionStorage.setItem("isLoggedIn", true);
+          setIsLoggedIn(true);
+          sessionStorage.setItem('userName',user.email);
+          window.location.reload();
+        }        
       })
       .catch((error) => {
-        if (error.response && error.response.data && error.response.data.message) {
+        if (
+          window.location.reload() && 
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
           alert(error.response.data.message);
         } else {
-          alert("An unknown error occurred.");
+          console.log("An unknown error occurred.");
         }
       });
   };
-
 
   return (
     <div className="container">
@@ -73,7 +87,12 @@ const Login = ({ setIsLoggedIn }) => {
                   />
                 </Form.Group>
 
-                <Button variant="secondary" type="submit" onClick={login}>
+                <Button
+                  variant="secondary"
+                  type="submit"
+                  style={{ margin: "2px" }}
+                  onClick={login}
+                >
                   Login
                 </Button>
                 <div>or</div>

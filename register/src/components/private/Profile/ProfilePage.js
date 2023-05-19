@@ -57,7 +57,7 @@ const ProfilePage = () => {
     formData.append('profilePic', user.profilePic);
 
     try {
-      const response = await axios.post('/api/user/profile', formData, {
+      const response = await axios.post('http://localhost:9002/api/user/profile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(response.data.message);
@@ -110,7 +110,7 @@ const ProfilePage = () => {
               <label htmlFor="profilePic" className="form-label">Profile Picture:</label>
               <input type="file" className="form-control" id="profilePic" name="profilePic" onChange={handleProfilePicChange} />
             </div>
-            <button type="submit" className="btn btn-primary">Update Profile</button>
+            <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Update Profile</button>
           </form>
         </div>
       </div>

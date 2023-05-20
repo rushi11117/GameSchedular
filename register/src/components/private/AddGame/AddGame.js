@@ -47,7 +47,7 @@ export default function AddGame() {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
-                        <h5 className="card-header">Register</h5>
+                        <h5 className="card-header">Add Free Time</h5>
                         <div className="card-body"></div>
                         {/* <Form.Group controlId="game" style={{ margin: '5px' }}>
                             <Form.Label>Choose Game</Form.Label>

@@ -4,24 +4,17 @@ import cors from "cors";
 import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
-// import { ObjectId } from 'mongodb';
+import { retrieveData } from "./retrive.cjs";
+import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
-// import { Venue } from './Models/Venues.js'
-// import Game  from './Models/GameReq.js'
+
+
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
-
-
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
 
 //Connection
 mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
@@ -29,6 +22,9 @@ mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
     useUnifiedTopology: true
 }, () => {
     console.log("DB Connected")
+    retrieveData((retrievedArray) => {
+        console.log(retrievedArray);
+    });
 })
 
 //Schema Defination And Initialization
@@ -47,13 +43,13 @@ const User = new mongoose.model("User", userSchema)
 
 
 const venueSchema = new mongoose.Schema({
-    venuefr : String,
-    email : String
+    venuefr: String,
+    email: String
 })
 
-const Venue = new mongoose.model("Venue",venueSchema)
+const Venue = new mongoose.model("Venue", venueSchema)
 
-
+//Game Requested by user
 const gameSchema = new mongoose.Schema({
     email: String,
 
@@ -62,12 +58,66 @@ const gameSchema = new mongoose.Schema({
             game: String,
             from: Date,
             till: Date,
-            venue:String
+            venue: String,
         },
     ],
 });
 
 const Game = new mongoose.model("Game", gameSchema)
+
+// slots to process time
+const slotSchema = new mongoose.Schema({
+    email: String,
+    game: String,
+    venue: String,
+    from: Date,
+    till: Date,
+    status: String
+})
+
+const Slot = new mongoose.model("Slot", slotSchema)
+
+
+// const collection = db.collection(collectionName);
+
+Game.find({}, (err, documents) => {
+    if (err) {
+        console.error('Error retrieving documents:', err);
+        client.close();
+        return;
+    }
+
+    // Print all documents
+
+    console.log('All documents in the collection:');
+    documents.forEach((doc) => {
+        const email = doc.email;
+        doc.freetime.forEach((ft) => {
+            const game = ft.game;
+            const venue = ft.venue;
+            const from = ft.from;
+            const till = ft.till;
+            const tmpslot = new Slot({
+                email,
+                game,
+                venue,
+                from,
+                till,
+                status: "NS"
+            })
+            tmpslot.save(err => {
+                if (err) {
+                    console.log("error updating slots!!")
+                    // res.send(err)
+                }
+            })
+        })
+
+    });
+});
+
+
+
 //Logic Per Route
 
 app.post("/login", (req, res) => {
@@ -112,16 +162,7 @@ app.post("/register", (req, res) => {
 
 })
 
-//update Profile
 
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//       cb(null, path.join(__dirname, 'uploads')); // Use an absolute path
-//     },
-//     filename: function (req, file, cb) {
-//       cb(null, Date.now() + '-' + file.originalname);
-//     },
-//   });
 
 
 const __filename = new URL(import.meta.url).pathname;
@@ -166,7 +207,7 @@ app.post('/api/user/profile', upload.single('profilePic'), async (req, res) => {
 
 
 app.put('/addfreetime', (req, res) => {
-    const { email, game, from, till,venuefr } = req.body;
+    const { email, game, from, till, venuefr } = req.body;
     console.log(req.body.venuefr);
     // Create a new document and update the freetime array for the email
     Game.findOneAndUpdate(
@@ -200,6 +241,28 @@ app.put('/addfreetime', (req, res) => {
 
         }
     })
+});
+
+
+// Collection name
+const gameScheduleCollection = 'gamehostory';
+const db = 'playersDB'
+// API endpoint to retrieve all scheduled games
+app.get('/games', async (req, res) => {
+
+    try {
+        // Retrieve all scheduled games from the collection
+        const games = await db.gameScheduleCollection(gameScheduleCollection).find().toArray();
+
+        // Send the games as a response
+        res.json(games);
+
+        // Close the database connection
+        client.close();
+    } catch (error) {
+        console.error('Error retrieving games:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 //venue Venue From Frontend

@@ -19,7 +19,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 export default function About() {
   return (
     <div className="container">
-      <h1>About This Portal</h1>
+      <h5 className='card-header'>About Us!!</h5>
     </div>
   );
 }

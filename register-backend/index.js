@@ -4,14 +4,18 @@ import cors from "cors";
 import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
+import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from "./DataBaseUtil/sedularSession.js"
 import { retrieveData } from "./retrive.cjs";
+import { ScheduleGames } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
 
-
+const Schema = mongoose.Schemas;
 const app = express()
+
+
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
@@ -22,10 +26,12 @@ mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
     useUnifiedTopology: true
 }, () => {
     console.log("DB Connected")
-    retrieveData((retrievedArray) => {
-        console.log(retrievedArray);
-    });
+    // retrieveData((retrievedArray) => {
+    //     console.log(retrievedArray);
+    // });
 })
+
+
 
 //Schema Defination And Initialization
 app.get("/", (req, res) => {
@@ -66,7 +72,13 @@ const gameSchema = new mongoose.Schema({
 const Game = new mongoose.model("Game", gameSchema)
 
 // slots to process time
+
+
 const slotSchema = new mongoose.Schema({
+    games_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     email: String,
     game: String,
     venue: String,
@@ -74,7 +86,7 @@ const slotSchema = new mongoose.Schema({
     till: Date,
     status: String
 })
-
+slotSchema.index({ games_id: 1 }, { unique: true });
 const Slot = new mongoose.model("Slot", slotSchema)
 
 
@@ -92,12 +104,14 @@ Game.find({}, (err, documents) => {
     console.log('All documents in the collection:');
     documents.forEach((doc) => {
         const email = doc.email;
+        const games_id = doc._id;
         doc.freetime.forEach((ft) => {
             const game = ft.game;
             const venue = ft.venue;
             const from = ft.from;
             const till = ft.till;
             const tmpslot = new Slot({
+                games_id,
                 email,
                 game,
                 venue,
@@ -105,12 +119,30 @@ Game.find({}, (err, documents) => {
                 till,
                 status: "NS"
             })
-            tmpslot.save(err => {
+
+            Slot.exists(tmpslot, (err, existingOnject) => {
                 if (err) {
-                    console.log("error updating slots!!")
-                    // res.send(err)
+                    console.log("Error:", err);
+                } else if (existingOnject) {
+                    console.log("Exact Object Already Exists");
+                } else {
+                    tmpslot.save()
+                        .then(savedObj => {
+                            console.log("Slots Updated!!");
+                        })
+                        .catch(error => {
+                            console.error('Error saving object:', error.message);
+                        });
                 }
             })
+
+
+            // tmpslot.save(err => {
+            //     if (err) {
+            //         console.log("error updating slots!!")
+            //         // res.send(err)
+            //     }
+            // })
         })
 
     });
@@ -207,6 +239,9 @@ app.post('/api/user/profile', upload.single('profilePic'), async (req, res) => {
 
 
 app.put('/addfreetime', (req, res) => {
+
+
+
     const { email, game, from, till, venuefr } = req.body;
     console.log(req.body.venuefr);
     // Create a new document and update the freetime array for the email
@@ -215,12 +250,17 @@ app.put('/addfreetime', (req, res) => {
         { $push: { freetime: { game, venuefr, from, till } } },
         { upsert: true }
     )
+        .then(documentsAdded())
+        .then(console.log(documentsAddedCount))
         .then(() => res.sendStatus(200))
         .catch((error) => {
             console.error(error);
             res.sendStatus(500);
         });
-
+    if (documentsAddedCount === 4) {
+        ScheduleGames()
+        resetdocumentsAddedCount()
+    }
 
     //Update Vanue List
     Venue.findOne({ email: email }, async (err, venue) => {
@@ -264,78 +304,6 @@ app.get('/games', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-//venue Venue From Frontend
-// app.put('/addfreetime', async function (req, res) {
-//     console.log(req.body)
-//     const game = req.body.game
-//     const from = req.body.from
-//     const till = req.body.till
-//     const venue = req.body.venue
-//     const email = req.body.email
-
-
-
-//     FreeTime.findOne({ email: email }, async (err, freetime) => {
-
-//         if (freetime) {
-//             console.log({ message: "Update" });
-
-//             try {
-//                 const updatedFreetime = await FreeTime.updateOne(
-//                     { _id: freetime._id },
-//                     {
-//                         $push: {
-//                             slot: {
-//                                 from,
-//                                 till,
-//                                 venue
-//                             }
-//                         }
-//                     }
-//                 );
-//                 console.log({ message: "Slot Added Successfully!!!" });
-//             } catch (err) {
-//                 console.log(err);
-//             }
-
-//         } else {
-//             const freeTime = new FreeTime({
-//                 game,
-//                 email,
-//                 slot: [{ from, till, venue }]
-//             });
-
-//             freeTime.save(err => {
-//                 if (err) {
-//                     console.log(err);
-//                 } else {
-//                     console.log({ message: "Slot Added Successfully!!!" });
-//                 }
-//             });
-//         }
-//     });
-
-//     Venue.findOne({ email: email }, async (err, venue) => {
-//         if (venue) {
-//             console.log("eat 1* 2* 3* 4* 5*")
-//         } else {
-//             const venue = new Venue({
-//                 email,
-//                 venue
-//             })
-//             venue.save(err => {
-//                 if (err) {
-//                     console.log(err)
-//                 } else {
-//                     console.log({ message: "Venue Added succesfully!!" })
-//                 }
-//             })
-
-//         }
-//     })
-
-// });
 
 app.listen(9002, () => {
     console.log("DB started on port 9002")

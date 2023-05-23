@@ -52,9 +52,10 @@ export default function GameSchedule() {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:9002/games')
+    axios.get('http://localhost:9002/gamesnear')
       .then(response => {
-        setGames(response.data);
+        // setGames(response.data);
+        console.log(response.data)
       })
       .catch(error => {
         console.log(error);

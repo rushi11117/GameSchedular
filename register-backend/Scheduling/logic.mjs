@@ -15,17 +15,19 @@ const ScheduledGamesSchema = new mongoose.Schema({
   },
 });
 
-const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
+export const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
 
-function findLatestTime(timestamp1, timestamp2) {
-  const date1 = new Date(timestamp1);
-  const date2 = new Date(timestamp2);
-
+function findLatestTime(timestamp1str, timestamp2str) {
+  
+  const timestamp1 = new Date(timestamp1str);
+  const timestamp2 = new Date(timestamp2str);
   // Compare the two dates and return the latest (most late) date
-  if (date1 > date2) {
-    return date1;
+  if (timestamp1 < timestamp2) {
+    // return timestamp2;
+    console.log(timestamp1);
   } else {
-    return date2;
+    console.log(timestamp2);
+    // return timestamp2;
   }
 }
 
@@ -90,7 +92,8 @@ function ScheduleGamesFor(slots) {
         slots[i].status = "S";
         slots[j].status = "S";
 
-        const playersPair = [slots[i]._id, slots[j]._id, findLatestTime([slots[i].from, slots[j].from])];
+        const playersPair = [slots[i].game_id, slots[j].game_id, findLatestTime([slots[i].from, slots[j].from])];
+        console.log(slots[i].from,slots[j].from)
         availablePlayers.push(playersPair);
       }
     }

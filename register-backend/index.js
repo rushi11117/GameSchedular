@@ -8,6 +8,7 @@ import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from ".
 import { retrieveData } from "./retrive.cjs";
 import { ScheduleGames } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
+import { ScheduledGame } from "./Scheduling/logic.mjs"
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
@@ -71,14 +72,11 @@ const gameSchema = new mongoose.Schema({
 
 const Game = new mongoose.model("Game", gameSchema)
 
+
 // slots to process time
 
-
 const slotSchema = new mongoose.Schema({
-    games_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
+    games_id: String,
     email: String,
     game: String,
     venue: String,
@@ -86,7 +84,6 @@ const slotSchema = new mongoose.Schema({
     till: Date,
     status: String
 })
-slotSchema.index({ games_id: 1 }, { unique: true });
 const Slot = new mongoose.model("Slot", slotSchema)
 
 
@@ -104,12 +101,13 @@ Game.find({}, (err, documents) => {
     console.log('All documents in the collection:');
     documents.forEach((doc) => {
         const email = doc.email;
-        const games_id = doc._id;
         doc.freetime.forEach((ft) => {
             const game = ft.game;
             const venue = ft.venue;
             const from = ft.from;
             const till = ft.till;
+            const games_id = String(ft._id)
+            console.log("slots:", games_id)
             const tmpslot = new Slot({
                 games_id,
                 email,
@@ -120,7 +118,7 @@ Game.find({}, (err, documents) => {
                 status: "NS"
             })
 
-            Slot.exists(tmpslot, (err, existingOnject) => {
+            Slot.exists({ games_id }, (err, existingOnject) => {
                 if (err) {
                     console.log("Error:", err);
                 } else if (existingOnject) {
@@ -135,14 +133,6 @@ Game.find({}, (err, documents) => {
                         });
                 }
             })
-
-
-            // tmpslot.save(err => {
-            //     if (err) {
-            //         console.log("error updating slots!!")
-            //         // res.send(err)
-            //     }
-            // })
         })
 
     });
@@ -288,22 +278,33 @@ app.put('/addfreetime', (req, res) => {
 const gameScheduleCollection = 'gamehostory';
 const db = 'playersDB'
 // API endpoint to retrieve all scheduled games
-app.get('/games', async (req, res) => {
+// app.get('/games', async (req, res) => {
 
-    try {
-        // Retrieve all scheduled games from the collection
-        const games = await db.gameScheduleCollection(gameScheduleCollection).find().toArray();
+//     try {
+//         // Retrieve all scheduled games from the collection
+//         const games = await db.gameScheduleCollection(gameScheduleCollection).find().toArray();
 
-        // Send the games as a response
-        res.json(games);
+//         // Send the games as a response
+//         res.json(games);
 
-        // Close the database connection
-        client.close();
-    } catch (error) {
-        console.error('Error retrieving games:', error);
-        res.status(500).send('Internal Server Error');
-    }
+//         // Close the database connection
+//         client.close();
+//     } catch (error) {
+//         console.error('Error retrieving games:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
+
+
+
+app.get('/gamesnear', (req, res) => {
+
+    ScheduledGame.find({}, '_id')
+        .then((documents) => {
+            console.log(documents[0][0])
+        })
 });
+
 
 app.listen(9002, () => {
     console.log("DB started on port 9002")

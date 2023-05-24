@@ -12,6 +12,7 @@ import ProfilePage from './components/private/Profile/ProfilePage';
 import Homepage from './components/private/homepage/Homepage';
 import Login from "./components/public/login/Login";
 import Register from "./components/public/register/Register";
+import MyGames from "./components/private/MyGames/MyGames";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -56,6 +57,9 @@ function App() {
           </Route>
           <Route exact path="/homepage">
             <Homepage />
+          </Route>
+          <Route exact path="/mygames">
+            <MyGames />
           </Route>
         </Switch>
         <Footer />

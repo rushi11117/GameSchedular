@@ -66,6 +66,9 @@ const PrivateHeader = ({ handleLogout }) => {
                                     <Link to="/profile" className="dropdown-item">
                                         Profile
                                     </Link >
+                                    <Link to="/mygames" className="dropdown-item">
+                                        My Games
+                                    </Link >
                                     <a className="dropdown-item" href="">
                                         Settings
                                     </a>

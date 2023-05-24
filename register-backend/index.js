@@ -75,7 +75,7 @@ const Game = new mongoose.model("Game", gameSchema)
 
 // slots to process time
 
-const slotSchema = new mongoose.Schema({
+ const slotSchema = new mongoose.Schema({
     games_id: String,
     email: String,
     game: String,
@@ -84,7 +84,7 @@ const slotSchema = new mongoose.Schema({
     till: Date,
     status: String
 })
-const Slot = new mongoose.model("Slot", slotSchema)
+export const Slot = new mongoose.model("Slot", slotSchema)
 
 
 // const collection = db.collection(collectionName);
@@ -247,7 +247,7 @@ app.put('/addfreetime', (req, res) => {
             res.sendStatus(500);
         });
     if (documentsAddedCount === 4) {
-        ScheduleGames()
+        ScheduledGame()
         resetdocumentsAddedCount()
     }
 

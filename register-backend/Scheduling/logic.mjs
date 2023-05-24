@@ -1,24 +1,26 @@
 import mongoose from 'mongoose';
 import { retrieveData } from '../retrive.cjs';
-
+import { Slot } from "../index.js"
 
 const Schema = mongoose.Schema;
-
 
 export const ScheduledGamesSchema = new mongoose.Schema({
   player1: String,
   player2: String,
   startTime: String,
-  // result: {
-  //   type: Array,
-  //   default: [],
-  // },
+  game: String,
+  result: {
+    type: Array,
+    default: [],
+  },
 });
 
-const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
+const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema);
 
+
+//not being use
 function findLatestTime(timestamp1str, timestamp2str) {
-  
+
   const timestamp1 = new Date(timestamp1str);
   const timestamp2 = new Date(timestamp2str);
   // Compare the two dates and return the latest (most late) date
@@ -32,24 +34,36 @@ function findLatestTime(timestamp1str, timestamp2str) {
 }
 
 
-async function insertScheduledGames(availablePlayers) {
-  const collectionName = "scheduledgames"
+async function insertScheduledGames(player1, player2, startTime, game) {
+  const result = [];
+  const tmpSchedule = new ScheduledGame({
+    player1,
+    player2,
+    startTime,
+    game,
+    result
+  })
 
-  try {
-
-    const db = mongoose.connection;
-    const collection = db.collection(collectionName);
-
-    const documents = availablePlayers.map(array => ({ data: array }));
-    const result = await collection.insertMany(documents);
-    
-
-    console.log(`${result.insertedCount} documents inserted successfully.`);
-  } catch (error) {
-    console.error('Error inserting scheduled games:', error);
-  }
+  console.log(player2);
+  tmpSchedule.save(err => {
+    if (err) {
+      console.log("error sving schedule:", err);
+    } else {
+      console.log("scheduled updated");
+    }
+  })
 }
 
+
+function changeStatusInCollection(slot_id) {
+  Slot.findByIdAndUpdate(slot_id, { status: 'S' })
+    .then((updatedSlot) => {
+      console.log('Updated User:', updatedSlot);
+    })
+    .catch((error) => {
+      console.error('Error updating user:', error);
+    });
+}
 
 
 function timeSlotsOverlap(slot1, slot2) {
@@ -89,31 +103,16 @@ function ScheduleGamesFor(slots) {
       if (currentPlayer.email !== slots[j].email && timeSlotsOverlap([currentPlayer.from, currentPlayer.till], [slots[j].from, slots[j].till]) && currentPlayer.status === "NS" && slots[j].status === "NS") {
         currentPlayer.status = "S";
         slots[j].status = "S";
+        changeStatusInCollection(currentPlayer._id);
+        changeStatusInCollection(slots[j]._id);
         const startTime = currentPlayer.from;
         const player1 = currentPlayer.email;
         const player2 = slots[j].email;
-        const tmpSchedule = new ScheduledGame({
-          player1,
-          player2,
-          startTime
-        })
-
-        console.log(player2);
-        tmpSchedule.save(err =>{
-          if(err) {
-            console.log("error sving schedule:",err);
-          } else {
-            console.log("scheduled updated");
-          }
-        })
-
-        
-        // const playersPair = [currentPlayer.game_id, slots[j].game_id, findLatestTime([currentPlayer.from, slots[j].from])];
-        // availablePlayers.push(playersPair);
+        const game = slots[j].game;
+        insertScheduledGames(player1, player2, startTime, game)
       }
     }
   }
-  // return availablePlayers;
 }
 
 

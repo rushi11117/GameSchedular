@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div>
       <Container className="py-3 bg-light text-center">
-        <div>&copy; todfod.org</div>
+        <div>&copy; g18.org</div>
       </Container>
     </div>
   );

@@ -11,6 +11,7 @@ import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
+import { error } from "console";
 
 const Schema = mongoose.Schemas;
 const app = express()
@@ -185,7 +186,6 @@ app.post("/register", (req, res) => {
 
 
 
-
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 
@@ -276,31 +276,27 @@ app.put('/addfreetime', (req, res) => {
 // Collection name
 const gameScheduleCollection = 'gamehostory';
 const db = 'playersDB'
-// API endpoint to retrieve all scheduled games
-// app.get('/games', async (req, res) => {
-
-//     try {
-//         // Retrieve all scheduled games from the collection
-//         const games = await db.gameScheduleCollection(gameScheduleCollection).find().toArray();
-
-//         // Send the games as a response
-//         res.json(games);
-
-//         // Close the database connection
-//         client.close();
-//     } catch (error) {
-//         console.error('Error retrieving games:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-
-
-
 app.get('/gamesnear', (req, res) => {
+
+    function getName(email) {
+        User.findOne({ email: email }, (err, user) => {
+            if(error) {
+                console.log("error finding user using email:",error)
+            } else {
+                return user.name
+            }
+        })
+    }
+
 
     ScheduledGame.find({})
         .then((schedule) => {
             // console.log('All Users:', users);
+            // const game = {
+            //     player1 : getName(schedule.player1),
+            //     player2 : getName(schedule.player2),
+            //     startTime : schedule.startTime
+            // }
             res.send(schedule)
         })
         .catch((error) => {

@@ -1,30 +1,19 @@
-import React, { useState } from 'react';
-import { Form, FormControl, Button } from 'react-bootstrap';
+import React from 'react';
 
 export default function QueryInput() {
-  const [query, setQuery] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(`User query: ${query}`);
-    // add code to handle the user query here
+  const email = 'example@example.com';
+  const phoneNumber = '123-456-7890';
+
+  const handleEmailClick = () => {
+    window.location.href = `mailto:${email}`;
   };
 
   return (
     <div className="container">
-      <h1>Add Text Field to ask queries from user</h1>
-      <Form onSubmit={handleSubmit}>
-        <FormControl
-          type="text"
-          placeholder="Enter your query here"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          className="mr-sm-2"
-        />
-        <Button variant="outline-primary" type="submit">
-          Submit
-        </Button>
-      </Form>
+      <h4>Contact Information</h4>
+      <p style={{ color: 'blue' }}>Email: <span onClick={handleEmailClick} style={{ cursor: 'pointer', textDecoration: 'underline' }}>{email}</span></p>
+      <p style={{ color: 'blue' }}>Phone Number: {phoneNumber}</p>
     </div>
   );
 }

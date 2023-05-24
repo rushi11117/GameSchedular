@@ -8,6 +8,8 @@ import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from ".
 import { retrieveData } from "./retrive.cjs";
 import { ScheduledGamesSchema } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
@@ -75,7 +77,7 @@ const Game = new mongoose.model("Game", gameSchema)
 
 // slots to process time
 
- const slotSchema = new mongoose.Schema({
+const slotSchema = new mongoose.Schema({
     games_id: String,
     email: String,
     game: String,
@@ -186,44 +188,69 @@ app.post("/register", (req, res) => {
 
 
 
-const __filename = new URL(import.meta.url).pathname;
-const __dirname = path.dirname(__filename);
+// const __filename = new URL(import.meta.url).pathname;
+// const __dirname = path.dirname(__filename);
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, __dirname, 'uploads');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    },
-
-
-});
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, __dirname, 'uploads');
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, file.originalname);
+//     },
 
 
-const upload = multer({ storage: storage });
+// });
 
-// Endpoint for handling the profile form submission
-app.post('/api/user/profile', upload.single('profilePic'), async (req, res) => {
-    try {
-        const { email, password, confirmPassword } = req.body;
-        console.log(pathname);
-        const profilePic = req.file.filename.slice(3); // The uploaded file is available as req.file
 
-        // Create a new user document and save it to the database
-        const user = new User({
-            email,
-            password,
-            confirmPassword,
-            profilePic,
-        });
-        await user.save();
+// const upload = multer({ storage: storage });
 
-        res.json({ message: 'User profile saved successfully' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'An error occurred' });
-    }
+// // Endpoint for handling the profile form submission
+// app.post('/api/user/profile', upload.single('profilePic'), async (req, res) => {
+//     try {
+//         const { email, password,  } = req.body;
+//         console.log(pathname);
+//         const profilePic = req.file.filename.slice(3); // The uploaded file is available as req.file
+
+//         // Create a new user document and save it to the database
+//         const user = new User({
+//             email,
+//             password,
+//             confirmPassword,
+//             profilePic,
+//         });
+//         await user.save();
+
+//         res.json({ message: 'User profile saved successfully' });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: 'An error occurred' });
+//     }
+// });
+
+
+
+
+
+router.post('/update-profile', upload.single('profilePic'), (req, res) => {
+    const { email } = req.body;
+    const profilePic = req.file;
+
+    // Update the user profile in the MongoDB user collection
+    User.findOneAndUpdate(
+        { email }, // Find the user based on the email
+        { profilePic: profilePic.filename }, // Update the profilePic field with the filename
+        { new: true }, // Return the updated user object
+        (err, user) => {
+            if (err) {
+                // Handle error
+                res.status(500).json({ message: 'Failed to update profile.' });
+            } else {
+                // Handle success
+                res.json({ message: 'Profile updated successfully!', user });
+            }
+        }
+    );
 });
 
 
@@ -280,8 +307,8 @@ app.get('/gamesnear', (req, res) => {
 
     function getName(email) {
         User.findOne({ email: email }, (err, user) => {
-            if(error) {
-                console.log("error finding user using email:",error)
+            if (error) {
+                console.log("error finding user using email:", error)
             } else {
                 return user.name
             }
@@ -291,12 +318,6 @@ app.get('/gamesnear', (req, res) => {
 
     ScheduledGame.find({})
         .then((schedule) => {
-            // console.log('All Users:', users);
-            // const game = {
-            //     player1 : getName(schedule.player1),
-            //     player2 : getName(schedule.player2),
-            //     startTime : schedule.startTime
-            // }
             res.send(schedule)
         })
         .catch((error) => {

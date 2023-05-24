@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import $ from 'jquery'
+import logo from "../../resources/logo.svg"
 import "./header.css"
 import { Link } from "react-router-dom"
 // import { UserContext } from "../Context";
@@ -23,7 +24,9 @@ const PrivateHeader = ({ handleLogout }) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <Link to="/" className="navbar-brand">LOGO</Link>
+                <Link to="/" className="navbar-brand">
+                <img src={logo} alt="Logo" />
+                </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

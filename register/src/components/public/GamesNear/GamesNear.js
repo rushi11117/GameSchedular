@@ -59,7 +59,7 @@ export default function GameSchedule() {
   return (
     <div className="container">
       <div className='card'>
-        <h5 className="card-header">Games Scheduled and Open for Viewers</h5>
+        <h5 className="card-header">All Games Scheduled</h5>
         <Form>
           <Form.Group controlId="searchGame">
             <Form.Control

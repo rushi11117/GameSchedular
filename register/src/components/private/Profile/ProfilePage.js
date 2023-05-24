@@ -18,12 +18,10 @@ const ProfilePage = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/api/user/profile');
+      const response = await axios.get('/update-profile');
       const userData = response.data;
       setUser({
-        email: userData.email,
-        password: '',
-        confirmPassword: '',
+        email: sessionStorage.getItem('email'),
         profilePic: null,
       });
     } catch (error) {
@@ -42,7 +40,7 @@ const ProfilePage = () => {
   const handleProfilePicChange = (event) => {
     setUser((prevUser) => ({
       ...prevUser,
-      profilePic: event.target.files[0],
+      file: event.target.files[0],
     }));
   };
 
@@ -67,10 +65,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ width: '60%' }}>
       <div className="card shadow">
         <div className="card-body">
-          <h1 className="card-title">Profile Page</h1>
+          <h4 className="card-title">Profile Page</h4>
           {message && <p className="card-text">{message}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -81,10 +79,11 @@ const ProfilePage = () => {
                 id="email"
                 name="email"
                 value={user.email}
+                placeholder={sessionStorage.getItem('email')}
                 onChange={handleInputChange}
               />
             </div>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <label htmlFor="password" className="form-label">Password:</label>
               <input
                 type="password"
@@ -105,7 +104,7 @@ const ProfilePage = () => {
                 value={user.confirmPassword}
                 onChange={handleInputChange}
               />
-            </div>
+            </div> */}
             <div className="mb-3">
               <label htmlFor="profilePic" className="form-label">Profile Picture:</label>
               <input type="file" className="form-control" id="profilePic" name="profilePic" onChange={handleProfilePicChange} />

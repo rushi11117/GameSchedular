@@ -6,16 +6,15 @@ import multer from "multer";
 import path from "path";
 import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from "./DataBaseUtil/sedularSession.js"
 import { retrieveData } from "./retrive.cjs";
-import { ScheduleGames } from "./Scheduling/logic.mjs"
+import { ScheduledGamesSchema } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
-import { ScheduledGame } from "./Scheduling/logic.mjs"
 
 //Models
 import { FreeTime } from './Models/FreeTime.js'
 
 const Schema = mongoose.Schemas;
 const app = express()
-
+const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
 
 app.use(express.json())
 app.use(express.urlencoded())
@@ -106,7 +105,7 @@ Game.find({}, (err, documents) => {
             const venue = ft.venue;
             const from = ft.from;
             const till = ft.till;
-            const games_id = String(ft._id)
+            const games_id = ft._id;
             console.log("slots:", games_id)
             const tmpslot = new Slot({
                 games_id,
@@ -299,10 +298,15 @@ const db = 'playersDB'
 
 app.get('/gamesnear', (req, res) => {
 
-    ScheduledGame.find({}, '_id')
-        .then((documents) => {
-            console.log(documents[0][0])
+    ScheduledGame.find({})
+        .then((schedule) => {
+            // console.log('All Users:', users);
+            res.send(schedule)
         })
+        .catch((error) => {
+            console.error('Error querying users:', error);
+        });
+
 });
 
 

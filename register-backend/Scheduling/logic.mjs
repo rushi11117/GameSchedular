@@ -5,17 +5,17 @@ import { retrieveData } from '../retrive.cjs';
 const Schema = mongoose.Schema;
 
 
-const ScheduledGamesSchema = new mongoose.Schema({
+export const ScheduledGamesSchema = new mongoose.Schema({
   player1: String,
   player2: String,
-  Game: String,
-  result: {
-    type: Array,
-    default: [],
-  },
+  startTime: String,
+  // result: {
+  //   type: Array,
+  //   default: [],
+  // },
 });
 
-export const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
+const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
 
 function findLatestTime(timestamp1str, timestamp2str) {
   
@@ -23,11 +23,11 @@ function findLatestTime(timestamp1str, timestamp2str) {
   const timestamp2 = new Date(timestamp2str);
   // Compare the two dates and return the latest (most late) date
   if (timestamp1 < timestamp2) {
-    // return timestamp2;
-    console.log(timestamp1);
+    return timestamp2;
+    // console.log(timestamp1);
   } else {
-    console.log(timestamp2);
-    // return timestamp2;
+    // console.log(timestamp2);
+    return timestamp2;
   }
 }
 
@@ -86,19 +86,34 @@ function ScheduleGamesFor(slots) {
   for (let i = 0; i < slots.length; i++) {
     const currentPlayer = slots[i];
     for (let j = 0; j < slots.length; j++) {
-      // const Game_id = slots.game_id;
-      console.log(typeof(slots.game_id));
-      if (slots[i].games_id !== slots[j].games_id && timeSlotsOverlap([slots[i].from, slots[i].till], [slots[j].from, slots[j].till]) && slots[i].status === "NS" && slots[j].status === "NS") {
-        slots[i].status = "S";
+      if (currentPlayer.email !== slots[j].email && timeSlotsOverlap([currentPlayer.from, currentPlayer.till], [slots[j].from, slots[j].till]) && currentPlayer.status === "NS" && slots[j].status === "NS") {
+        currentPlayer.status = "S";
         slots[j].status = "S";
+        const startTime = currentPlayer.from;
+        const player1 = currentPlayer.email;
+        const player2 = slots[j].email;
+        const tmpSchedule = new ScheduledGame({
+          player1,
+          player2,
+          startTime
+        })
 
-        const playersPair = [slots[i].game_id, slots[j].game_id, findLatestTime([slots[i].from, slots[j].from])];
-        console.log(slots[i].from,slots[j].from)
-        availablePlayers.push(playersPair);
+        console.log(player2);
+        tmpSchedule.save(err =>{
+          if(err) {
+            console.log("error sving schedule:",err);
+          } else {
+            console.log("scheduled updated");
+          }
+        })
+
+        
+        // const playersPair = [currentPlayer.game_id, slots[j].game_id, findLatestTime([currentPlayer.from, slots[j].from])];
+        // availablePlayers.push(playersPair);
       }
     }
   }
-  return availablePlayers;
+  // return availablePlayers;
 }
 
 
@@ -113,7 +128,7 @@ export function ScheduleGames() {
       const filteredSlotsArray = retrievedArray.filter(slot => slot.status === 'NS');
       const schedule = ScheduleGamesFor(filteredSlotsArray);
       // console.log(schedule);
-      insertScheduledGames(schedule);
+      // insertScheduledGames(schedule);
     });
   });
 }

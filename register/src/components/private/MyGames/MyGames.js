@@ -57,6 +57,7 @@ export default function MyGames() {
         // e.preventDefault();
         // You can perform any necessary actions with the collected game results here
         try {
+            
             await axios.put(`http://localhost:9002/addscorecard/${selectedGameId}`, sets);
             // Handle success or perform any additional actions
         } catch (error) {

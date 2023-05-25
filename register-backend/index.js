@@ -253,7 +253,6 @@ app.post('/update-profile', upload.single('profilePic'), (req, res) => {
     );
 });
 
-
 app.put('/addfreetime', (req, res) => {
 
 
@@ -325,6 +324,35 @@ app.get('/gamesnear', (req, res) => {
         });
 
 });
+
+app.put('/addscorecard/:id', async (req, res) => {
+    console.log(req.params.id)
+    console.log(req.body)
+    const gameId = req.params.id;
+    const { result } = req.body;
+  
+
+
+    try {
+        const game = await ScheduledGame.findByIdAndUpdate(gameId, {
+          $set: { 'result.setNumber': result.setNumber, 'result.player1Score': result.player1Score, 'result.player2Score': result.player2Score }
+        }, { new: true });
+    
+        res.json(game);
+      } catch (error) {
+        console.error('Error updating game:', error);
+        res.status(500).json({ error: 'Failed to update game' });
+      }
+
+
+    // try {
+    //   const game = await ScheduledGame.findByIdAndUpdate(gameId, updatedGame, { new: true });
+    //   res.json(game);
+    // } catch (error) {
+    //   console.error('Error updating game:', error);
+    //   res.status(500).json({ error: 'Failed to update game' });
+    // }
+  });
 
 
 app.listen(9002, () => {

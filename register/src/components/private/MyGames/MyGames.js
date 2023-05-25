@@ -1,19 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { Link, useHistory } from "react-router-dom"
 
 export default function MyGames() {
     const [games, setGames] = useState([]);
     const [searchGame, setSearchGame] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedGameId, setSelectedGameId] = useState('');
-    const history = useHistory();
 
-    function addScorecard(game_id, result) {
-        console.log("scorecard updated");
-    }
+    const [sets, setSets] = useState([]);
+    const [currentSet, setCurrentSet] = useState({ setNumber: 1, result: "" });
 
+    const [editSetIndex, setEditSetIndex] = useState(-1);
+
+    const handlePlayer1ScoreChange = (index, event) => {
+        const updatedSets = [...sets];
+        updatedSets[index].player1Score = event.target.value;
+        setSets(updatedSets);
+    };
+
+    const handlePlayer2ScoreChange = (index, event) => {
+        const updatedSets = [...sets];
+        updatedSets[index].player2Score = event.target.value;
+        setSets(updatedSets);
+    };
+
+
+    const addSet = () => {
+        setSets([...sets, currentSet]);
+        setCurrentSet({ setNumber: currentSet.setNumber + 1, player1Score: "", player2Score: "" });
+        setEditSetIndex(-1);
+    };
+
+    const deleteSet = (index) => {
+        const updatedSets = sets.filter((_, i) => i !== index);
+        setSets(updatedSets);
+    };
+
+    const editSet = (index) => {
+        const setToEdit = sets[index];
+        setCurrentSet(setToEdit);
+        setEditSetIndex(index);
+    };
+
+    const updateSet = () => {
+        const updatedSets = [...sets];
+        updatedSets[editSetIndex] = currentSet;
+        setSets(updatedSets);
+        setCurrentSet({ setNumber: currentSet.setNumber + 1, player1Score: "", player2Score: "" });
+        setEditSetIndex(-1);
+    };
+
+    const handleSubmit  = async (e) => {
+        console.log("choosen game id",selectedGameId);
+        
+        // e.preventDefault();
+        // You can perform any necessary actions with the collected game results here
+        try {
+            await axios.put(`http://localhost:9002/addscorecard/${selectedGameId}`, sets);
+            // Handle success or perform any additional actions
+        } catch (error) {
+            console.log(error)
+        }
+        console.log(sets);
+        
+        // sessionStorage.removeItem('choosenGameId')
+    };
 
     function addScorecard(game_id, result) {
         setSelectedGameId(game_id);
@@ -62,9 +114,9 @@ export default function MyGames() {
     return (
         <div className="container">
             <div className='card'>
-                <h5 className="card-header">Games Scheduled and Open for Viewers</h5>
+                <h5 className="card-header">Your Games Scheduled</h5>
                 <Form>
-                    <Form.Group controlId="searchGame">
+                    <Form.Group style={{ margin: '5px' }} controlId="searchGame">
                         <Form.Control
                             type="text"
                             placeholder="Search by game"
@@ -113,13 +165,64 @@ export default function MyGames() {
             {/* Modal for adding scorecard */}
             <Modal show={showModal} onHide={handleModalClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>View Scorecard</Modal.Title>
+                    <Modal.Title>{
+                        <p style={{ fontSize: '20px' }}>
+                            Game ID: {selectedGameId}
+                        </p>
+                    }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {/* Place your form elements for adding scorecard here */}
                     {/* You can access the selectedGameId in this modal */}
-                    <p>Game ID: {selectedGameId}</p>
+                    {/* <p>Game ID: {selectedGameId}</p> */}
                     {/* Add your form fields for scorecard input */}
+
+
+                    <div>
+                        <h5>Add Game Result</h5>
+                        <Form onSubmit={handleSubmit(selectedGameId)}>
+                            {sets.map((set, index) => (
+                                <div key={index}>
+                                    <Form.Group>
+                                        <Form.Label>Set {set.setNumber}:</Form.Label>
+                                        <Form.Control
+                                            style={{ margin: '5px' }}
+                                            type="text"
+                                            value={set.player1Score}
+                                            onChange={(event) => handlePlayer1ScoreChange(index, event)}
+                                            placeholder="Player 1 Score"
+                                            required
+                                        />
+                                        <Form.Control
+                                            style={{ margin: '5px' }}
+                                            type="text"
+                                            value={set.player2Score}
+                                            onChange={(event) => handlePlayer2ScoreChange(index, event)}
+                                            placeholder="Player 2 Score"
+                                            required
+                                        />
+
+                                        <Button variant="danger" style={{ margin: '5px' }} onClick={() => deleteSet(index)}>Delete</Button>
+                                        <Button variant="primary" style={{ margin: '5px' }} onClick={() => editSet(index)}>Edit</Button>
+                                    </Form.Group>
+                                </div>
+                            ))}
+                            {editSetIndex === -1 ? (
+                                <Button variant="primary" style={{ margin: '5px' }} onClick={addSet}>
+                                    Add Set
+                                </Button>
+                            ) : (
+                                <Button variant="primary" style={{ margin: '5px' }} onClick={updateSet}>
+                                    Update Set
+                                </Button>
+                            )}
+                            <Button variant="primary" style={{ margin: '5px' }} type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+                    </div>
+
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleModalClose}>

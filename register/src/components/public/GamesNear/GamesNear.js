@@ -71,7 +71,7 @@ export default function GameSchedule() {
           </Form.Group>
         </Form>
         <table className="table table-striped">
-          <thead>
+          <thead style={{ margin: '10px' }}>
             <tr>
               <th>Player 1</th>
               <th>Player 2</th>
@@ -90,16 +90,16 @@ export default function GameSchedule() {
                 <td>{game.game}</td>
                 <td>
                   {/* <Link to="/addscorecard" className="nav-link"> */}
-                    {/* <Button variant="btn-secondry" style={{ color: 'brown' }} onClick={() => addScorecard(game._id)}>
+                  {/* <Button variant="btn-secondry" style={{ color: 'brown' }} onClick={() => addScorecard(game._id)}>
                       Scorecard
                     </Button> */}
-                    <Button
-                      variant="primary"
-                      // style={{ color: '' }}
-                      onClick={() => ViewScorecard(game._id)}
-                    >
-                      View Scorecard
-                    </Button>
+                  <Button
+                    variant="primary"
+                    // style={{ color: '' }}
+                    onClick={() => ViewScorecard(game._id)}
+                  >
+                    View Scorecard
+                  </Button>
                   {/* </Link> */}
                 </td>
               </tr>

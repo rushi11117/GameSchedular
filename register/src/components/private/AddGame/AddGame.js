@@ -16,6 +16,8 @@ export default function AddGame() {
 
     // /Declared Game
     const games = [
+        { value: '', label: 'Select Game' },
+        { value: 'chess', label: 'chess' },
         { value: 'Tennis', label: 'Tennis' },
         { value: 'Ping Pong', label: 'Ping Pong' },
         { value: 'Squash', label: 'Squash' },
@@ -106,8 +108,6 @@ export default function AddGame() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
-
                         <Form.Group controlId="venue" style={{ margin: '5px' }}>
                             <Form.Label>Venue</Form.Label>
                             <Form.Control
@@ -120,17 +120,6 @@ export default function AddGame() {
                                 placeholder="Enter venue"
                             />
                         </Form.Group>
-
-
-                        {/* <Form.Group controlId="venue" style={{ margin: '5px' }}>
-                            <Form.Label>Venue</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={venue}
-                                onChange={(e) => setVenue(e.target.venue)}
-                                placeholder="Enter venue"
-                            />
-                        </Form.Group> */}
                         <Button
                             variant="secondary"
                             type="button"

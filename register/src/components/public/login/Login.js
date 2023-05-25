@@ -1,60 +1,83 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { Alert, Row, Col, Form, Button } from "react-bootstrap";
+import { Col, Form, Button, Alert } from "react-bootstrap";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = ({ setIsLoggedIn }) => {
   const history = useHistory();
-
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
-  const [showError, setShowError] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
     setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
   };
 
-  const login = (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-    sessionStorage.setItem('email',user.email);
-    if (!user.email || !user.password) {
-      alert("Email and password are required.");
-      return;
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const { email, password } = user;
+    const updatedErrors = {
+      email: "",
+      password: "",
+    };
+    if (!email) {
+      updatedErrors.email = "Please enter your email";
+      valid = false;
+    }
+    if (!password) {
+      updatedErrors.password = "Please enter a password";
+      valid = false;
     }
 
-    axios
-      .post("http://localhost:9002/login", user)
-      .then((res) => {
-        const loginState = sessionStorage.getItem("isLoggedIn");
-        if (loginState === "true") {
-          alert("User already logged in");
-        } else {
-          sessionStorage.setItem("isLoggedIn", true);
-          setIsLoggedIn(true);
-          sessionStorage.setItem('userName',user.email);
-          window.location.reload();
-        }        
-      })
-      .catch((error) => {
-        if (
-          window.location.reload() && 
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          alert(error.response.data.message);
-        } else {
-          console.log("An unknown error occurred.");
-        }
-      });
+    setErrors(updatedErrors);
+    return valid;
+  };
+
+  const login = () => {
+    if (validateForm()) {
+      axios
+        .post("http://localhost:9002/login", user)
+        .then((res) => {
+          const loginState = sessionStorage.getItem("isLoggedIn");
+          if (loginState === "true") {
+            alert("User already logged in");
+          } else {
+            sessionStorage.setItem("isLoggedIn", true);
+            setIsLoggedIn(true);
+            sessionStorage.setItem("userName", user.email);
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            alert(error.response.data.message);
+          } else {
+            console.log("An unknown error occurred.");
+          }
+        });
+    }
   };
 
   return (
@@ -71,21 +94,44 @@ const Login = ({ setIsLoggedIn }) => {
                     type="email"
                     name="email"
                     value={user.email}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     placeholder="Enter your email"
+                    isInvalid={!!errors.email}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.email}
+                  </Form.Control.Feedback>
                 </Form.Group>
-
-                <Form.Group controlId="formBasicPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    value={user.password}
-                    onChange={handleChange}
-                    placeholder="Enter your password"
-                  />
-                </Form.Group>
+                <Col>
+                  <Form.Group controlId="formBasicPassword" className="row">
+                    <Form.Label>Password</Form.Label>
+                    <div className="password-input-wrapper row">
+                      <Form.Control
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={user.password}
+                        onChange={handleInputChange}
+                        placeholder="Enter your password"
+                        isInvalid={!!errors.password}
+                        required
+                      />
+                      <div
+                        className="password-toggle-icon"
+                        onClick={toggleShowPassword}
+                      >
+                        {showPassword ? (
+                          <AiOutlineEyeInvisible />
+                        ) : (
+                          <AiOutlineEye />
+                        )}
+                      </div>
+                    </div>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.password}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
 
                 <Button
                   variant="secondary"

@@ -8,7 +8,7 @@ import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from ".
 import { retrieveData } from "./retrive.cjs";
 import { ScheduledGamesSchema } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
-const multer = require('multer');
+// const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 //Models
@@ -232,7 +232,7 @@ app.post("/register", (req, res) => {
 
 
 
-router.post('/update-profile', upload.single('profilePic'), (req, res) => {
+app.post('/update-profile', upload.single('profilePic'), (req, res) => {
     const { email } = req.body;
     const profilePic = req.file;
 

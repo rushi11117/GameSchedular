@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { Link, useHistory } from "react-router-dom"
+import { formatDateTime } from "../../../resources/FormatDateTime"
+
 
 export default function GameSchedule() {
   const [games, setGames] = useState([]);
   const [searchGame, setSearchGame] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedGameId, setSelectedGameId] = useState('');
+  const [playersModel, setPlayersModel] = useState([]);
   const [gameResults, setGameResults] = useState([]);
   const [showScorecard, setShowScorecard] = useState(false);
 
@@ -20,8 +23,10 @@ export default function GameSchedule() {
     const fetchGameResults = async () => {
       try {
         const response = await axios.get(`http://localhost:9002/game-results/${game_id}`);
+        setPlayersModel([response.data.result[0].player1, response.data.result[0].player2]);
+        // console.log("game between ",response.data.result[0].player1)
         setGameResults(response.data.result[0].result);
-        console.log("required",response.data.result[0].result)
+        console.log("required", response.data.result[0].result)
       } catch (error) {
         console.error(error);
       }
@@ -30,21 +35,6 @@ export default function GameSchedule() {
 
     setShowScorecard(!showScorecard);
   }
-
-
-  // useEffect(() => {
-  //   const fetchGameResults = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:9002/game-result/${selectedGameId}`);
-  //       setGameResults(response.data.result);
-  //       console.log(response.data.result)
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchGameResults();
-  // }, []);
 
   function handleModalClose() {
     setShowModal(false);
@@ -67,6 +57,13 @@ export default function GameSchedule() {
     setSearchGame(e.target.value);
   };
 
+  function isCompleatedCheckBox() {
+
+    const handleCheckboxChange = (event) => {
+      // setIsCompleateActive(event.target.checked);
+    };
+  }
+
   const filteredGames = games.filter(game =>
     game.game.toLowerCase().includes(searchGame.toLowerCase())
   );
@@ -76,7 +73,7 @@ export default function GameSchedule() {
       <div className='card'>
         <h5 className="card-header">All Games Scheduled</h5>
         <Form>
-          <Form.Group controlId="searchGame">
+          <Form.Group controlId="searchGame" style={{ margin: '5px' }}>
             <Form.Control
               type="text"
               placeholder="Search by game"
@@ -92,6 +89,7 @@ export default function GameSchedule() {
               <th>Player 2</th>
               <th>Start Time</th>
               <th>Game</th>
+              <th>Status</th>
               <th>Actions</th>
               {/* <th>Venue</th> */}
             </tr>
@@ -101,8 +99,18 @@ export default function GameSchedule() {
               <tr key={game._id}>
                 <td>{game.player1}</td>
                 <td>{game.player2}</td>
-                <td>{game.startTime}</td>
+                <td>{formatDateTime(game.startTime)}</td>
                 <td>{game.game}</td>
+                <td>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={game.isCompleated}
+                      onChange={isCompleatedCheckBox}
+                    />
+                  </label>
+                </td>
                 <td>
                   {/* <Link to="/addscorecard" className="nav-link"> */}
                   {/* <Button variant="btn-secondry" style={{ color: 'brown' }} onClick={() => addScorecard(game._id)}>
@@ -135,8 +143,8 @@ export default function GameSchedule() {
                 {gameResults.map((set, index) => (
                   <li key={index} className="list-group-item">
                     <p className="mb-1">Set Number: {set.setNumber}</p>
-                    <p className="mb-1">Player 1 Score: {set.player1Score}</p>
-                    <p className="mb-1">Player 2 Score: {set.player2Score}</p>
+                    <p className="mb-1">{playersModel[0]}: {set.player1Score}</p>
+                    <p className="mb-1">{playersModel[1]}: {set.player2Score}</p>
                   </li>
                 ))}
               </ul>

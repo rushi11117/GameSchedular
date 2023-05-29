@@ -17,6 +17,10 @@ const PrivateHeader = ({ handleLogout }) => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const closeDropdown = () => {
+        setIsDropdownOpen(false);
+      };
+
     const [user, setLoginUser] = useState({})
     // const { isLogedIn } = useContext(UserContext);
     // console.log(user._id)
@@ -67,16 +71,16 @@ const PrivateHeader = ({ handleLogout }) => {
                                     className="dropdown-menu show"
                                     aria-labelledby="profileDropdown"
                                 >
-                                    <Link to="/profile" className="dropdown-item">
+                                    <Link to="/profile" className="dropdown-item" onClick={closeDropdown}>
                                         Profile
                                     </Link >
-                                    <Link to="/mygames" className="dropdown-item">
+                                    <Link to="/mygames" className="dropdown-item" onClick={closeDropdown}>
                                         My Games
                                     </Link >
-                                    <a className="dropdown-item" href="">
+                                    <a className="dropdown-item" href="" onClick={closeDropdown}>
                                         Settings
                                     </a>
-                                    <a className="dropdown-item" href="/logout">
+                                    <a className="dropdown-item" href="/logout" onClick={closeDropdown}>
                                         Logout
                                     </a>
                                 </div>

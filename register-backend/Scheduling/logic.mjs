@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { retrieveData } from '../retrive.cjs';
 import { Slot } from "../index.js"
 
+
+
+
 const Schema = mongoose.Schema;
 
 export const ScheduledGamesSchema = new mongoose.Schema({
@@ -9,6 +12,10 @@ export const ScheduledGamesSchema = new mongoose.Schema({
   player2: String,
   startTime: String,
   game: String,
+  isCompleated: {
+    type: Boolean,
+    default: false
+  },
   result: {
     type: Array,
     default: ["not yet added"],
@@ -36,7 +43,6 @@ function findLatestTime(timestamp1str, timestamp2str) {
 
 async function insertScheduledGames(player1, player2, startTime, game) {
   const result = [];
-  const isCompleated = false;
   const tmpSchedule = new ScheduledGame({
     player1,
     player2,

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { formatDateTime } from "../../../resources/FormatDateTime"
+import { FaEdit } from 'react-icons/fa';
+
+
+
 
 export default function MyGames() {
     const [games, setGames] = useState([]);
@@ -53,9 +58,6 @@ export default function MyGames() {
 
     const handleSubmit = async (e) => {
         console.log("choosen game id", selectedGameId);
-
-        // e.preventDefault();
-        // You can perform any necessary actions with the collected game results here
         try {
 
             await axios.put(`http://localhost:9002/addscorecard/${selectedGameId}`, sets);
@@ -64,9 +66,18 @@ export default function MyGames() {
             console.log(error)
         }
         console.log(sets);
-
         // sessionStorage.removeItem('choosenGameId')
     };
+
+    function cancelGame(game_id) {
+        try {
+            axios.put(`http://localhost:9002/changestatus/${game_id}`)
+        } catch (error) {
+            console.log(error);
+        }
+
+        // .then()
+    }
 
     function addScorecard(game_id, result) {
         setSelectedGameId(game_id);
@@ -77,6 +88,27 @@ export default function MyGames() {
         setShowModal(false);
         setSelectedGameId('');
     }
+
+    // function isCompleatedCheckBox(selectedGameId, status) {
+    //     console.log("clicked")
+    //     // setIsCompleateActive(event.target.checked);
+    //     axios.put(`http://localhost:9002/changestatus/${selectedGameId}`, status)
+    // }
+
+    const isCompleatedCheckBox = async (selectedGameId, status) => {
+        console.log("choosen game id", selectedGameId);
+        try {
+
+            await axios.post(`http://localhost:9002/changestatus/${selectedGameId}`, status);
+            // Handle success or perform any additional actions
+        } catch (error) {
+            console.log(error)
+        }
+        console.log(sets);
+        // sessionStorage.removeItem('choosenGameId')
+    };
+
+
 
 
 
@@ -118,7 +150,7 @@ export default function MyGames() {
             <div className='card'>
                 <h5 className="card-header">Your Games Scheduled</h5>
                 <Form>
-                    <Form.Group style={{ margin: '5px' }} controlId="searchGame">
+                    <Form.Group style={{ padding: '6px' }} controlId="searchGame">
                         <Form.Control
                             type="text"
                             placeholder="Search by game"
@@ -134,6 +166,7 @@ export default function MyGames() {
                             <th>Player 2</th>
                             <th>Start Time</th>
                             <th>Game</th>
+                            <th>Compleated</th>
                             <th>Actions</th>
                             {/* <th>Scorecard Added?</th> */}
                         </tr>
@@ -143,28 +176,35 @@ export default function MyGames() {
                             <tr key={game._id}>
                                 <td>{game.player1}</td>
                                 <td>{game.player2}</td>
-                                <td>{game.startTime}</td>
+                                <td>{formatDateTime(game.startTime)}</td>
                                 <td>{game.game}</td>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={game.isCompleated || game.result[0]}
+                                        onChange={isCompleatedCheckBox(game._id, game.isCompleated)}
+                                    />
+                                </td>
                                 {/* <td>{game.result[0].setNumber}</td> */}
                                 <td>
-                                    {game.result[0] ? (
-                                        <Button
-                                            variant="primary"
-                                            // style={{ color: '' }}
-                                            onClick={() => addScorecard(game._id)}
-                                        >
-                                            Edit Scorecard
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="primary"
-                                            // style={{ color: '' }}
-                                            onClick={() => addScorecard(game._id)}
-                                        >
-                                            Add Scorecard
-                                        </Button>
-                                    )}
-                                    {/* </Link> */}
+                                    <div className="d-flex">
+                                        <div className="mr-2">
+                                            {game.result[0] ? (
+                                                <Button variant="primary" onClick={() => addScorecard(game._id)}>
+                                                    Edit Scorecard
+                                                </Button>
+                                            ) : (
+                                                <Button variant="primary" onClick={() => addScorecard(game._id)}>
+                                                    Add Scorecard
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <Button varient="btn btn-secondary" style={{ color: 'clack', backgroundColor: 'red' }} onClick={cancelGame(game._id)}>
+                                                Cancel
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -22,6 +22,7 @@ const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cors())
+ScheduledGame()
 
 //Connection
 mongoose.connect("mongodb://127.0.0.1:27017/playersDB", {
@@ -328,12 +329,16 @@ app.get('/gamesnear', (req, res) => {
 app.put('/addscorecard/:id', async (req, res) => {
     const gameId = req.params.id;
     const updatedGames = req.body;
+    const flag = true;
     console.log(req.params.id)
     console.log(req.body)
 
     try {
         const game = await ScheduledGame.findByIdAndUpdate(gameId, {
-            $set: { result: updatedGames }
+            $set: {
+                result: updatedGames,
+                isCompleated: flag
+            },
         }, { new: true });
 
         res.json(game);
@@ -347,7 +352,7 @@ app.put('/addscorecard/:id', async (req, res) => {
 app.get('/game-results/:id', (req, res) => {
     const gameId = req.params.id;
     console.log("fetching result ")
-    ScheduledGame.find({_id: gameId})
+    ScheduledGame.find({ _id: gameId })
         .then((gameResults) => {
             console.log(gameResults)
             res.json({ result: gameResults });
@@ -357,6 +362,23 @@ app.get('/game-results/:id', (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         });
 });
+
+app.post('/changestatus/:id'), async (req, res) => {
+    const gameId = req.params.id;
+    const status = !req.body.status;
+    console.log(status)
+    try {
+        const game = await ScheduledGame.findByIdAndUpdate(gameId, {
+            $set: {
+                isCompleated: !status
+            },
+        }, { new: true });
+
+    } catch (error) {
+        console.error('Error updating game:', error);
+        res.status(500).json({ error: 'Failed to update game' });
+    }
+}
 
 
 app.listen(9002, () => {

@@ -8,34 +8,49 @@ export default function GameSchedule() {
   const [searchGame, setSearchGame] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedGameId, setSelectedGameId] = useState('');
-  const history = useHistory();
-
-  function ViewScorecard(game_id, result) {
-    console.log("scorecard updated");
-  }
+  const [gameResults, setGameResults] = useState([]);
+  const [showScorecard, setShowScorecard] = useState(false);
 
 
-  function ViewScorecard(game_id, result) {
-    setSelectedGameId(game_id);
+
+
+  function ViewScorecard(game_id) {
+    console.log("fetching result...");
     setShowModal(true);
+    const fetchGameResults = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9002/game-results/${game_id}`);
+        setGameResults(response.data.result[0].result);
+        // console.log(response.data.result[0].result)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGameResults()
+
+    setShowScorecard(!showScorecard);
   }
+
+
+  // useEffect(() => {
+  //   const fetchGameResults = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:9002/game-result/${selectedGameId}`);
+  //       setGameResults(response.data.result);
+  //       console.log(response.data.result)
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchGameResults();
+  // }, []);
 
   function handleModalClose() {
     setShowModal(false);
     setSelectedGameId('');
   }
 
-
-
-  const handleViewScorecard = () => {
-    // Perform the scorecard submission logic here
-    // You can use the selectedGameId to identify the game being scored
-    // Once the scorecard is added, you can close the modal and perform any additional actions
-    console.log(`Scorecard added for game ID: ${selectedGameId}`);
-    setShowModal(false);
-    setSelectedGameId('');
-    // Additional logic or API calls can be performed here
-  };
 
   useEffect(() => {
     axios.get('http://localhost:9002/gamesnear')
@@ -115,15 +130,46 @@ export default function GameSchedule() {
         <Modal.Body>
           {/* Place your form elements for adding scorecard here */}
           {/* You can access the selectedGameId in this modal */}
-          <p>Game ID: {selectedGameId}</p>
+          {/* <p>Game ID: {selectedGameId}</p> */}
+
+
+          {/* <div className="container">
+            <h4 className="mt-4">Game Results</h4>
+            {showScorecard && (
+              <ul className="list-group">
+                {gameResults[0].result.map((set, index) => (
+                  <li key={index} className="list-group-item">
+                    <p className="mb-1">Set Number: {set}</p>
+                    <p className="mb-1">Player 1 Score: {set.player1Score}</p>
+                    <p className="mb-1">Player 2 Score: {set.player2Score}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div> */}
+
+          <div className="container">
+            <h4 className="mt-4">Game Results</h4>
+            {showScorecard && (
+              <ul className="list-group">
+                {gameResults.map((set, index) => (
+                  <li key={index} className="list-group-item">
+                    <p className="mb-1">Set Number: {set.setNumber}</p>
+                    <p className="mb-1">Player 1 Score: {set.player1Score}</p>
+                    <p className="mb-1">Player 2 Score: {set.player2Score}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+
+
           {/* Add your form fields for scorecard input */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleModalClose}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleViewScorecard}>
-            Add Scorecard
           </Button>
         </Modal.Footer>
       </Modal>

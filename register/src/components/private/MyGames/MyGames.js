@@ -51,20 +51,20 @@ export default function MyGames() {
         setEditSetIndex(-1);
     };
 
-    const handleSubmit  = async (e) => {
-        console.log("choosen game id",selectedGameId);
-        
+    const handleSubmit = async (e) => {
+        console.log("choosen game id", selectedGameId);
+
         // e.preventDefault();
         // You can perform any necessary actions with the collected game results here
         try {
-            
+
             await axios.put(`http://localhost:9002/addscorecard/${selectedGameId}`, sets);
             // Handle success or perform any additional actions
         } catch (error) {
             console.log(error)
         }
         console.log(sets);
-        
+
         // sessionStorage.removeItem('choosenGameId')
     };
 
@@ -94,7 +94,7 @@ export default function MyGames() {
         axios.get('http://localhost:9002/gamesnear')
             .then(response => {
                 setGames(response.data);
-                // console.log(response.data)
+                console.log("response games near:",response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -149,6 +149,7 @@ export default function MyGames() {
                                     {/* <Button variant="btn-secondry" style={{ color: 'brown' }} onClick={() => addScorecard(game._id)}>
                       Scorecard
                     </Button> */}
+                    {/* {} */}
                                     <Button
                                         variant="primary"
                                         // style={{ color: '' }}

@@ -100,7 +100,7 @@ Game.find({}, (err, documents) => {
 
     // Print all documents
 
-    console.log('All documents in the collection:');
+    // console.log('All documents in the collection:');
     documents.forEach((doc) => {
         const email = doc.email;
         doc.freetime.forEach((ft) => {
@@ -109,7 +109,7 @@ Game.find({}, (err, documents) => {
             const from = ft.from;
             const till = ft.till;
             const games_id = ft._id;
-            console.log("slots:", games_id)
+            // console.log("slots:", games_id)
             const tmpslot = new Slot({
                 games_id,
                 email,
@@ -124,7 +124,7 @@ Game.find({}, (err, documents) => {
                 if (err) {
                     console.log("Error:", err);
                 } else if (existingOnject) {
-                    console.log("Exact Object Already Exists");
+                    // console.log("Exact Object Already Exists");
                 } else {
                     tmpslot.save()
                         .then(savedObj => {
@@ -160,6 +160,18 @@ app.post("/login", (req, res) => {
         }
     })
 })
+
+
+// app.get("/getname",(req,res) => {
+//     const {email} = req.body
+//     User.findOne({email : email}, (err, user) => {
+//         if(user) {
+//             res.send(user.name)
+//         } else {
+//             res.send({message:"undefined"})
+//         }
+//     })
+// })
 
 
 //register
@@ -279,7 +291,7 @@ app.put('/addfreetime', (req, res) => {
 
     //Update Vanue List
     Venue.findOne({ email: email }, async (err, venue) => {
-        if (venue) {
+        if (!venue) {
             console.log("eat 1* 2* 3* 4* 5*")
         } else {
             const venue = new Venue({
@@ -330,19 +342,33 @@ app.put('/addscorecard/:id', async (req, res) => {
     const updatedGames = req.body;
     console.log(req.params.id)
     console.log(req.body)
-  
+
     try {
-      const game = await ScheduledGame.findByIdAndUpdate(gameId, {
-        $set: { result: updatedGames }
-      }, { new: true });
-  
-      res.json(game);
+        const game = await ScheduledGame.findByIdAndUpdate(gameId, {
+            $set: { result: updatedGames }
+        }, { new: true });
+
+        res.json(game);
     } catch (error) {
-      console.error('Error updating game:', error);
-      res.status(500).json({ error: 'Failed to update game' });
+        console.error('Error updating game:', error);
+        res.status(500).json({ error: 'Failed to update game' });
     }
-  });
-  
+});
+
+
+app.get('/game-results/:id', (req, res) => {
+    const gameId = req.params.id;
+    console.log("fetching result ")
+    ScheduledGame.find({_id: gameId})
+        .then((gameResults) => {
+            console.log(gameResults)
+            res.json({ result: gameResults });
+        })
+        .catch((error) => {
+            console.error('Error retrieving game results:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        });
+});
 
 
 app.listen(9002, () => {

@@ -11,7 +11,7 @@ export const ScheduledGamesSchema = new mongoose.Schema({
   game: String,
   result: {
     type: Array,
-    default: [],
+    default: ["not yet added"],
   },
 });
 

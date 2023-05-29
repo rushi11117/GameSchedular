@@ -36,6 +36,7 @@ function findLatestTime(timestamp1str, timestamp2str) {
 
 async function insertScheduledGames(player1, player2, startTime, game) {
   const result = [];
+  const isCompleated = false;
   const tmpSchedule = new ScheduledGame({
     player1,
     player2,

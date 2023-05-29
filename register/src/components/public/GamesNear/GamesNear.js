@@ -21,7 +21,7 @@ export default function GameSchedule() {
       try {
         const response = await axios.get(`http://localhost:9002/game-results/${game_id}`);
         setGameResults(response.data.result[0].result);
-        // console.log(response.data.result[0].result)
+        console.log("required",response.data.result[0].result)
       } catch (error) {
         console.error(error);
       }
@@ -122,32 +122,12 @@ export default function GameSchedule() {
           </tbody>
         </table>
       </div>
-      {/* Modal for adding scorecard */}
+      {/* Modal for showing scorecard */}
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>View Scorecard</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Place your form elements for adding scorecard here */}
-          {/* You can access the selectedGameId in this modal */}
-          {/* <p>Game ID: {selectedGameId}</p> */}
-
-
-          {/* <div className="container">
-            <h4 className="mt-4">Game Results</h4>
-            {showScorecard && (
-              <ul className="list-group">
-                {gameResults[0].result.map((set, index) => (
-                  <li key={index} className="list-group-item">
-                    <p className="mb-1">Set Number: {set}</p>
-                    <p className="mb-1">Player 1 Score: {set.player1Score}</p>
-                    <p className="mb-1">Player 2 Score: {set.player2Score}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div> */}
-
           <div className="container">
             <h4 className="mt-4">Game Results</h4>
             {showScorecard && (
@@ -162,10 +142,6 @@ export default function GameSchedule() {
               </ul>
             )}
           </div>
-
-
-
-          {/* Add your form fields for scorecard input */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleModalClose}>

@@ -94,7 +94,7 @@ export default function MyGames() {
         axios.get('http://localhost:9002/gamesnear')
             .then(response => {
                 setGames(response.data);
-                console.log("response games near:",response.data)
+                console.log("response games near:", response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -106,6 +106,7 @@ export default function MyGames() {
     };
 
     const currentUser = sessionStorage.getItem('email')
+
     const filteredGames = games.filter(game =>
         game.game.toLowerCase().includes(searchGame.toLowerCase()) &&
         (game.player1 === currentUser || game.player2 === currentUser)
@@ -134,7 +135,7 @@ export default function MyGames() {
                             <th>Start Time</th>
                             <th>Game</th>
                             <th>Actions</th>
-                            {/* <th>Venue</th> */}
+                            {/* <th>Scorecard Added?</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -144,19 +145,25 @@ export default function MyGames() {
                                 <td>{game.player2}</td>
                                 <td>{game.startTime}</td>
                                 <td>{game.game}</td>
+                                {/* <td>{game.result[0].setNumber}</td> */}
                                 <td>
-                                    {/* <Link to="/addscorecard" className="nav-link"> */}
-                                    {/* <Button variant="btn-secondry" style={{ color: 'brown' }} onClick={() => addScorecard(game._id)}>
-                      Scorecard
-                    </Button> */}
-                    {/* {} */}
-                                    <Button
-                                        variant="primary"
-                                        // style={{ color: '' }}
-                                        onClick={() => addScorecard(game._id)}
-                                    >
-                                        Add Scorecard
-                                    </Button>
+                                    {game.result[0] ? (
+                                        <Button
+                                            variant="primary"
+                                            // style={{ color: '' }}
+                                            onClick={() => addScorecard(game._id)}
+                                        >
+                                            Edit Scorecard
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            // style={{ color: '' }}
+                                            onClick={() => addScorecard(game._id)}
+                                        >
+                                            Add Scorecard
+                                        </Button>
+                                    )}
                                     {/* </Link> */}
                                 </td>
                             </tr>

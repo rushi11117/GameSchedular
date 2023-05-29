@@ -162,18 +162,6 @@ app.post("/login", (req, res) => {
 })
 
 
-// app.get("/getname",(req,res) => {
-//     const {email} = req.body
-//     User.findOne({email : email}, (err, user) => {
-//         if(user) {
-//             res.send(user.name)
-//         } else {
-//             res.send({message:"undefined"})
-//         }
-//     })
-// })
-
-
 //register
 app.post("/register", (req, res) => {
     const { name, email, password } = req.body

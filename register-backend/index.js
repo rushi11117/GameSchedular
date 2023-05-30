@@ -300,6 +300,18 @@ app.put('/addfreetime', (req, res) => {
 });
 
 
+app.get('/getvenues', async (req, res) => {
+
+    try {
+        const venues = await Venue.find({}, 'venuefr');
+        res.json(venues);
+    } catch (error) {
+        console.error('Error retrieving about:', error);
+        res.status(500).json({ error: 'Failed to retrieve about' });
+    }
+
+})
+
 // Collection name
 const gameScheduleCollection = 'gamehostory';
 const db = 'playersDB'
@@ -354,7 +366,6 @@ app.get('/game-results/:id', (req, res) => {
     console.log("fetching result ")
     ScheduledGame.find({ _id: gameId })
         .then((gameResults) => {
-            console.log(gameResults)
             res.json({ result: gameResults });
         })
         .catch((error) => {
@@ -363,7 +374,7 @@ app.get('/game-results/:id', (req, res) => {
         });
 });
 
-app.post('/changestatus/:id'), async (req, res) => {
+app.put('/changestatus/:id'), async (req, res) => {
     const gameId = req.params.id;
     const status = !req.body.status;
     console.log(status)

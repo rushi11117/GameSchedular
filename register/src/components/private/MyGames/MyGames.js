@@ -69,9 +69,10 @@ export default function MyGames() {
         // sessionStorage.removeItem('choosenGameId')
     };
 
-    function cancelGame(game_id) {
+    function handleCancelGame(cancelGameId) {
+        console.log("selected cancel",typeof(cancelGameId))
         try {
-            axios.put(`http://localhost:9002/changestatus/${game_id}`)
+            axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`)
         } catch (error) {
             console.log(error);
         }
@@ -88,12 +89,6 @@ export default function MyGames() {
         setShowModal(false);
         setSelectedGameId('');
     }
-
-    // function isCompleatedCheckBox(selectedGameId, status) {
-    //     console.log("clicked")
-    //     // setIsCompleateActive(event.target.checked);
-    //     axios.put(`http://localhost:9002/changestatus/${selectedGameId}`, status)
-    // }
 
     const isCompleatedCheckBox = async (selectedGameId, status) => {
         console.log("choosen game id", selectedGameId);
@@ -178,13 +173,26 @@ export default function MyGames() {
                                 <td>{game.player2}</td>
                                 <td>{formatDateTime(game.startTime)}</td>
                                 <td>{game.game}</td>
+
+
                                 <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={game.isCompleated || game.result[0]}
+                                        onChange={() => {isCompleatedCheckBox(game._id, game.isCompleated)}}
+                                    />
+                                </td>
+
+
+
+
+                                {/* <td>
                                     <input
                                         type="checkbox"
                                         checked={game.isCompleated || game.result[0]}
                                         onChange={isCompleatedCheckBox(game._id, game.isCompleated)}
                                     />
-                                </td>
+                                </td> */}
                                 {/* <td>{game.result[0].setNumber}</td> */}
                                 <td>
                                     <div className="d-flex">
@@ -200,9 +208,14 @@ export default function MyGames() {
                                             )}
                                         </div>
                                         <div>
-                                            <Button varient="btn btn-secondary" style={{ color: 'clack', backgroundColor: 'red' }} onClick={cancelGame(game._id)}>
-                                                Cancel
-                                            </Button>
+                                            {!game.isCompleated ? (
+                                                <Button varient="btn btn-secondary" style={{ color: 'clack', backgroundColor: 'red' }} onClick={() => handleCancelGame(game._id)}>
+                                                    Cancel
+                                                </Button>
+                                            ) : (
+                                                <div></div>
+                                            )}
+
                                         </div>
                                     </div>
                                 </td>

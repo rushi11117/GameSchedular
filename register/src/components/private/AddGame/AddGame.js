@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -11,6 +11,29 @@ export default function AddGame() {
     const [from, setFrom] = useState(new Date());
     const [till, setTill] = useState(new Date());
     const [venuefr, setVenue] = useState('');
+    const [addvenuefr, setAddVenue] = useState('');
+    const defaultVenue = "Select Venue"
+
+
+
+
+    const [venues, setVenues] = useState([]);
+
+    useEffect(() => {
+        fetchVenues();
+    }, []);
+
+    const fetchVenues = async () => {
+        try {
+            const response = await axios.get('http://localhost:9002/getvenues');
+            const uniqueVenues = Array.from(new Set(response.data.map(obj => obj.venuefr)));
+            setVenues(uniqueVenues);
+            sessionStorage.setItem('venues', JSON.stringify(uniqueVenues));
+        } catch (error) {
+            console.error('Error retrieving venues:', error);
+        }
+    };
+
 
 
 
@@ -109,7 +132,7 @@ export default function AddGame() {
                             </Col>
                         </Row>
                         <Form.Group controlId="venue" style={{ margin: '5px' }}>
-                            <Form.Label>Venue</Form.Label>
+                            <Form.Label>Add Venue</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={venuefr}
@@ -120,6 +143,25 @@ export default function AddGame() {
                                 placeholder="Enter venue"
                             />
                         </Form.Group>
+
+
+                        <Form.Group controlId="venue" style={{ margin: '5px' }}>
+                            <Form.Label>Select Venue</Form.Label>
+                            <Form.Select
+                                value={venuefr}
+                                onChange={(e) => setVenue(e.target.value)}
+                                placeholder="Select venue"
+                            >
+                                <option value="">{defaultVenue}</option>
+                                {venues.map((venue, index) => (
+                                    <option key={`${venue}-${index}`} value={venue}>
+                                        {venue}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+
+
                         <Button
                             variant="secondary"
                             type="button"

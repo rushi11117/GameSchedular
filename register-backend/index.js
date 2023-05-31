@@ -8,6 +8,7 @@ import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from ".
 import { retrieveData } from "./retrive.cjs";
 import { ScheduledGamesSchema } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
+// import {CancelGame} from "./DataBaseUtil/CancelGame.mjs"
 // const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
@@ -16,6 +17,7 @@ import { FreeTime } from './Models/FreeTime.js'
 import { error } from "console";
 
 const Schema = mongoose.Schemas;
+const { ObjectId } = mongoose;
 const app = express()
 const ScheduledGame = new mongoose.model("ScheduledGame", ScheduledGamesSchema)
 
@@ -73,7 +75,7 @@ const gameSchema = new mongoose.Schema({
     ],
 });
 
-const Game = new mongoose.model("Game", gameSchema)
+export const Game = new mongoose.model("Game", gameSchema)
 
 
 // slots to process time
@@ -87,6 +89,8 @@ const slotSchema = new mongoose.Schema({
     till: Date,
     status: String
 })
+
+
 export const Slot = new mongoose.model("Slot", slotSchema)
 
 
@@ -338,6 +342,65 @@ app.get('/gamesnear', (req, res) => {
 
 });
 
+
+// app.put('/cancelgame/:id', async (req, res) => {
+//     // const game_id = mongoose.Types.ObjectId(req.params.id);
+//     const email = req.body.email;
+//     const game_id = req.params.id;
+//     // Game.findOneAndDelete({ _id: game_id })
+//     //     .then(
+//     //         // CancelGame(game_id, email),
+//     //         console.log("EXCE")
+//     //     )
+
+//     // .catch ((error) => {
+//     //     console.error("erro deleting game", error)
+//     // })
+
+
+//     Game.findOneAndDelete({ _id: game_id }, (err, deletedDocument) => {
+//         if (err) {
+//             console.error(err);
+//             return;
+//         }
+
+//         if (deletedDocument) {
+//             console.log('Deleted Document:', deletedDocument);
+//         } else {
+//             console.log('Document not found.');
+//         }
+//     });
+
+// })
+
+
+app.put('/cancelgame/:id', async (req, res) => {
+    // const game_id = req.params.id;
+    const game_id = mongoose.Types.ObjectId(req.params.id);
+    const email = req.body.email;
+    console.log(game_id, typeof (game_id))
+
+    try {
+        const deletedDocument = await ScheduledGame.findOneAndDelete({ _id: game_id }).exec();
+
+        if (deletedDocument) {
+            console.log('Deleted Document:', deletedDocument);
+            // Call the CancelGame function passing game_id and email
+            // CancelGame(game_id, email);
+        } else {
+            console.log('Document not found.');
+        }
+
+        res.status(200).send('Game canceled successfully.');
+    } catch (error) {
+        console.error('Error deleting game:', error);
+        res.status(500).send('An error occurred while canceling the game.');
+    }
+});
+
+
+
+
 app.put('/addscorecard/:id', async (req, res) => {
     const gameId = req.params.id;
     const updatedGames = req.body;
@@ -390,6 +453,7 @@ app.put('/changestatus/:id'), async (req, res) => {
         res.status(500).json({ error: 'Failed to update game' });
     }
 }
+
 
 
 app.listen(9002, () => {

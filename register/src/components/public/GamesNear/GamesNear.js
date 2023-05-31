@@ -118,7 +118,12 @@ export default function GameSchedule() {
                     </Button> */}
                   <Button
                     variant="primary"
-                    // style={{ color: '' }}
+                    style={{
+                      color: 'black',
+                      backgroundColor: 'sky blue',
+                      padding: '5px 10px',
+                      fontSize: '12px',
+                    }}
                     onClick={() => ViewScorecard(game._id)}
                   >
                     View Scorecard

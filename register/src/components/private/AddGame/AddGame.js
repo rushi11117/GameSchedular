@@ -13,6 +13,16 @@ export default function AddGame() {
     const [venuefr, setVenue] = useState('');
     const [addvenuefr, setAddVenue] = useState('');
     const defaultVenue = "Select Venue"
+    // /Declared Game
+    const games = [
+        { value: '', label: 'Select Game' },
+        { value: 'chess', label: 'chess' },
+        { value: 'Tennis', label: 'Tennis' },
+        { value: 'Ping Pong', label: 'Ping Pong' },
+        { value: 'Squash', label: 'Squash' },
+        { value: 'Badminton', label: 'Badminton' }
+        // Add more games as needed
+    ];
 
 
 
@@ -34,19 +44,6 @@ export default function AddGame() {
         }
     };
 
-
-
-
-    // /Declared Game
-    const games = [
-        { value: '', label: 'Select Game' },
-        { value: 'chess', label: 'chess' },
-        { value: 'Tennis', label: 'Tennis' },
-        { value: 'Ping Pong', label: 'Ping Pong' },
-        { value: 'Squash', label: 'Squash' },
-        { value: 'Badminton', label: 'Badminton' }
-        // Add more games as needed
-    ];
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -74,22 +71,6 @@ export default function AddGame() {
                     <div className="card">
                         <h5 className="card-header">Add Free Time</h5>
                         <div className="card-body"></div>
-                        {/* <Form.Group controlId="game" style={{ margin: '5px' }}>
-                            <Form.Label>Choose Game</Form.Label>
-                            <Form.Select
-                                gamevalue={game}
-                                onChange={(e1) => setGame(e1.target.gamevalue)}
-                                placeholder="Select game"
-                            >
-                                <option gamevalue="">Select game</option>
-                                {games.map((gameOption) => (
-                                    <option key={gameOption.gamevalue} value={gameOption.gamevalue}>
-                                        {gameOption.label}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </Form.Group> */}
-
 
                         <Form.Group controlId="game" style={{ margin: '5px' }}>
                             <Form.Label>Choose Game</Form.Label>
@@ -105,6 +86,8 @@ export default function AddGame() {
                                 ))}
                             </Form.Select>
                         </Form.Group>
+                        
+
                         <Row>
                             <Col style={{ margin: '5px' }}>
                                 <Form.Group controlId="from">
@@ -118,6 +101,7 @@ export default function AddGame() {
                                     />
                                 </Form.Group>
                             </Col>
+
                             <Col>
                                 <Form.Group controlId="till">
                                     <Form.Label>Free till</Form.Label>
@@ -131,6 +115,8 @@ export default function AddGame() {
                                 </Form.Group>
                             </Col>
                         </Row>
+
+
                         <Form.Group controlId="venue" style={{ margin: '5px' }}>
                             <Form.Label>Add Venue</Form.Label>
                             <Form.Control

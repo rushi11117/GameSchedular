@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { formatDateTime } from "../../../resources/FormatDateTime"
 import { FaEdit } from 'react-icons/fa';
 
@@ -12,6 +12,8 @@ export default function MyGames() {
     const [searchGame, setSearchGame] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedGameId, setSelectedGameId] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    // const [refresh, setRefresh] = useState(false);
 
     const [sets, setSets] = useState([]);
     const [currentSet, setCurrentSet] = useState({ setNumber: 1, result: "" });
@@ -69,16 +71,39 @@ export default function MyGames() {
         // sessionStorage.removeItem('choosenGameId')
     };
 
-    function handleCancelGame(cancelGameId) {
-        console.log("selected cancel",typeof(cancelGameId))
+    // function handleCancelGame(cancelGameId) {
+    //     console.log("selected cancel", typeof (cancelGameId))
+    //     try {
+    //         await axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`, sessionStorage.getItem("email"));
+    //         console.log("Game canceled successfully");
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
+
+
+    async function handleCancelGame(cancelGameId) {
+        console.log("selected cancel", typeof cancelGameId);
+        // try {
+        //     await axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`, sessionStorage.getItem("email"));
+        //     setShowAlert(true);
+        // } catch (error) {
+        //     console.log(error);
+        // }
+
         try {
-            axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`)
+            await axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`, sessionStorage.getItem("email"));
+
+            setShowAlert(true);
+
+            setTimeout(() => {
+                handleRefresh();
+            }, 800);
         } catch (error) {
             console.log(error);
         }
-
-        // .then()
     }
+
 
     function addScorecard(game_id, result) {
         setSelectedGameId(game_id);
@@ -89,6 +114,10 @@ export default function MyGames() {
         setShowModal(false);
         setSelectedGameId('');
     }
+
+    const handleRefresh = () => {
+        window.location.reload();
+    };
 
     const isCompleatedCheckBox = async (selectedGameId, status) => {
         console.log("choosen game id", selectedGameId);
@@ -143,6 +172,12 @@ export default function MyGames() {
     return (
         <div className="container">
             <div className='card'>
+                {showAlert && (
+                    <Alert variant="warning" onClose={() => setShowAlert(false)} dismissible>
+                        Game deleted successfully.
+                    </Alert>
+                )
+                }
                 <h5 className="card-header">Your Games Scheduled</h5>
                 <Form>
                     <Form.Group style={{ padding: '6px' }} controlId="searchGame">
@@ -179,7 +214,7 @@ export default function MyGames() {
                                     <input
                                         type="checkbox"
                                         checked={game.isCompleated || game.result[0]}
-                                        onChange={() => {isCompleatedCheckBox(game._id, game.isCompleated)}}
+                                        onChange={() => { isCompleatedCheckBox(game._id, game.isCompleated) }}
                                     />
                                 </td>
 
@@ -198,16 +233,55 @@ export default function MyGames() {
                                     <div className="d-flex">
                                         <div className="mr-2">
                                             {game.result[0] ? (
-                                                <Button variant="primary" onClick={() => addScorecard(game._id)}>
+                                                <Button
+                                                    variant="primary"
+                                                    style={{
+                                                        color: 'black',
+                                                        backgroundColor: 'sky blue',
+                                                        padding: '5px 10px',
+                                                        fontSize: '12px',
+                                                    }}
+                                                    onClick={() => addScorecard(game._id)}>
                                                     Edit Scorecard
                                                 </Button>
                                             ) : (
-                                                <Button variant="primary" onClick={() => addScorecard(game._id)}>
+                                                <Button
+                                                    variant="primary"
+                                                    style={{
+                                                        color: 'black',
+                                                        backgroundColor: 'sky blue',
+                                                        padding: '5px 10px',
+                                                        fontSize: '12px',
+                                                    }}
+                                                    onClick={() => addScorecard(game._id)}>
                                                     Add Scorecard
                                                 </Button>
                                             )}
                                         </div>
+
+
                                         <div>
+
+                                            {!game.isCompleated ? (
+                                                <Button
+                                                    variant="btn btn-secondary"
+                                                    style={{
+                                                        color: 'black',
+                                                        backgroundColor: '#FF555A',
+                                                        padding: '5px 10px',
+                                                        fontSize: '12px',
+                                                    }}
+                                                    onClick={() => handleCancelGame(game._id)}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            ) : (
+                                                <div></div>
+                                            )}
+                                        </div>
+
+
+                                        {/* <div>
                                             {!game.isCompleated ? (
                                                 <Button varient="btn btn-secondary" style={{ color: 'clack', backgroundColor: 'red' }} onClick={() => handleCancelGame(game._id)}>
                                                     Cancel
@@ -215,8 +289,9 @@ export default function MyGames() {
                                             ) : (
                                                 <div></div>
                                             )}
+                                        </div> */}
 
-                                        </div>
+
                                     </div>
                                 </td>
                             </tr>

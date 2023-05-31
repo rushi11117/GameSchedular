@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { formatDateTime } from "../../../resources/FormatDateTime"
-import { FaEdit } from 'react-icons/fa';
 
 
 
@@ -92,7 +91,8 @@ export default function MyGames() {
         // }
 
         try {
-            await axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`, sessionStorage.getItem("email"));
+            const email = sessionStorage.getItem("email");
+            await axios.put(`http://localhost:9002/cancelgame/${cancelGameId}`, email);
 
             setShowAlert(true);
 
@@ -142,6 +142,7 @@ export default function MyGames() {
         // Once the scorecard is added, you can close the modal and perform any additional actions
         console.log(`Scorecard added for game ID: ${selectedGameId}`);
         setShowModal(false);
+        window.location.reload();
         setSelectedGameId('');
         // Additional logic or API calls can be performed here
     };

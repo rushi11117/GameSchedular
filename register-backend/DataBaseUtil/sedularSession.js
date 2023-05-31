@@ -1,4 +1,4 @@
-export let documentsAddedCount = 3;
+export let documentsAddedCount = 4;
 
 export function documentsAdded() {
     documentsAddedCount ++;
@@ -7,10 +7,3 @@ export function documentsAdded() {
 export function resetdocumentsAddedCount () {
     documentsAddedCount = 3;
 }
-
-
-// module.exports = {
-//     documentsAdded,
-//     resetdocumentsAddedCount,
-//     documentsAddedCount
-// }

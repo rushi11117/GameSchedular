@@ -8,7 +8,7 @@ import { documentsAdded, documentsAddedCount, resetdocumentsAddedCount } from ".
 import { retrieveData } from "./retrive.cjs";
 import { ScheduledGamesSchema } from "./Scheduling/logic.mjs"
 import { isDuplicateDocument } from "./DataBaseUtil/isDuplicateDocument.cjs"
-// import {CancelGame} from "./DataBaseUtil/CancelGame.mjs"
+import {ReflectChanges} from "./DataBaseUtil/ReflectChanges.mjs"
 // const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
@@ -375,7 +375,6 @@ app.get('/gamesnear', (req, res) => {
 
 
 app.put('/cancelgame/:id', async (req, res) => {
-    // const game_id = req.params.id;
     const game_id = mongoose.Types.ObjectId(req.params.id);
     const email = req.body.email;
     console.log(game_id, typeof (game_id))
@@ -385,8 +384,7 @@ app.put('/cancelgame/:id', async (req, res) => {
 
         if (deletedDocument) {
             console.log('Deleted Document:', deletedDocument);
-            // Call the CancelGame function passing game_id and email
-            // CancelGame(game_id, email);
+            ReflectChanges([mongoose.Types.ObjectId(deletedDocument.dslot1),mongoose.Types.ObjectId(deletedDocument.dslot2)],email);
         } else {
             console.log('Document not found.');
         }

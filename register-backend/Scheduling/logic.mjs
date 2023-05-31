@@ -6,10 +6,13 @@ import { Slot } from "../index.js"
 
 
 const Schema = mongoose.Schema;
+const { ObjectId } = mongoose;
 
 export const ScheduledGamesSchema = new mongoose.Schema({
   player1: String,
+  dslot1: String,
   player2: String,
+  dslot2: String,
   startTime: String,
   game: String,
   isCompleated: {
@@ -41,11 +44,15 @@ function findLatestTime(timestamp1str, timestamp2str) {
 }
 
 
-async function insertScheduledGames(player1, player2, startTime, game) {
+async function insertScheduledGames(player1, slot1, player2, slot2, startTime, game) {
   const result = [];
+  const dslot1 = String(slot1);
+  const dslot2 = String(slot2);
   const tmpSchedule = new ScheduledGame({
     player1,
+    dslot1,
     player2,
+    dslot2,
     startTime,
     game,
     result
@@ -116,7 +123,7 @@ function ScheduleGamesFor(slots) {
         const player1 = currentPlayer.email;
         const player2 = slots[j].email;
         const game = slots[j].game;
-        insertScheduledGames(player1, player2, startTime, game)
+        insertScheduledGames(player1, currentPlayer._id, player2, slots[j]._id, startTime, game)
       }
     }
   }

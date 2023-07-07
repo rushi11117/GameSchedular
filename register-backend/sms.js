@@ -1,7 +1,7 @@
 import twilio from 'twilio';
 
-const accountSid = 'ACa0b92e651c1311b0a84c8e9ae6733a1d';
-const authToken = 'd09bf30a253dd142063c2769c3cb04c5';
+const accountSid = 'ACCOUNT_SID';
+const authToken = 'AUTHENTICATION_TOKEN';
 const client = twilio(accountSid, authToken);
 
 client.messages
